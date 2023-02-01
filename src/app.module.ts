@@ -23,9 +23,7 @@ import { AuthModule } from './auth/auth.module';
     // }),
     TypeOrmModule.forRoot({
       type: 'mongodb',
-      host: 'localhost',
-      port: 27017,
-      database: 'china-crypto',
+      url: process.env.MONGO_URI || 'mongodb://localhost:27017/china-crypto',
       entities: [Coin, User, PromotedList],
       useUnifiedTopology: true,
     }),
