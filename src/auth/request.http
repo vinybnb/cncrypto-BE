@@ -1,0 +1,25 @@
+### USER
+
+
+### SIGN UP
+POST http://localhost:3000/auth/signUp
+content-type: application/json
+
+{
+    "email": "quanghau961@gmail.com",
+    "password": "hauvo"
+}
+
+### SIGN IN
+POST http://localhost:3000/auth/signIn
+content-type: application/json
+
+{
+    "email": "quanghau961@gmail.com",
+    "password": "hauvo"
+}
+
+
+### GET ME
+GET http://localhost:3000/auth/protected
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNzgzMDczODQtMzExYS00ZTlmLThmZTEtYjBkM2E1YTRlOGM4IiwiZW1haWwiOiJxdWFuZ2hhdTk2MUBnbWFpbC5jb20iLCJwYXNzd29yZCI6IjZhMGEzMThiY2MzZjMwMmMuMjgxNWZjZjE0ZWFmZDAxMzY3YmQ2MzFhNTY3NDljNjFiMTMzNGZkN2ZkNjU5MDI1ZGYxNzA4MmM3MWQ3NTIyZSIsInJvbGUiOiJBRE1JTiIsImNyZWF0ZWRBdCI6IjIwMjItMDktMThUMDU6Mjg6MjguMjIxWiIsInVwZGF0ZWRBdCI6IjIwMjItMDktMThUMDU6Mjg6MjguMjIxWiJ9LCJpYXQiOjE2NjM5ODY4OTMsImV4cCI6MTY2Mzk4NzE5M30.Z7NpIC1kliaZlAjTBXxC0eP7OvTcafQCvYEtRyfR7r8

@@ -1,0 +1,20 @@
+### USER
+
+
+### SIGN UP
+POST http://localhost:3000/auth/signUp
+content-type: application/json
+
+{
+    "email": "quanghau961@gmail.com",
+    "password": "hauvo"
+}
+
+### SIGN IN
+POST http://localhost:3000/auth/signIn
+content-type: application/json
+
+{
+    "email": "quanghau961@gmail.com",
+    "password": "hauvo"
+}
