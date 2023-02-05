@@ -1,9 +1,11 @@
+import { HttpService } from '@nestjs/axios';
 import {
   BadRequestException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { lastValueFrom, map } from 'rxjs';
 import { Repository, ILike } from 'typeorm';
 import { Coin } from './coin.entity';
 import { STATUS } from './coin.enum';
@@ -15,6 +17,7 @@ export class CoinsService {
     @InjectRepository(Coin) private coinRepo: Repository<Coin>,
     @InjectRepository(PromotedList)
     private promotedListRepo: Repository<PromotedList>,
+    private httpService: HttpService,
   ) {}
 
   async create(body) {
@@ -33,19 +36,24 @@ export class CoinsService {
   }
 
   async getPromotedList() {
-    return this.promotedListRepo.manager
-      .getMongoRepository(PromotedList)
-      .aggregate([
-        {
-          $lookup: {
-            from: 'coin',
-            localField: 'coinId',
-            foreignField: '_id',
-            as: 'coin',
-          },
-        },
-      ])
-      .next();
+    const http = this.httpService
+      .get('https://api.moontok.io/api/promote-content')
+      .pipe(map((res) => res.data));
+    const data = await lastValueFrom(http);
+    return data;
+    // return this.promotedListRepo.manager
+    //   .getMongoRepository(PromotedList)
+    //   .aggregate([
+    //     {
+    //       $lookup: {
+    //         from: 'coin',
+    //         localField: 'coinId',
+    //         foreignField: '_id',
+    //         as: 'coin',
+    //       },
+    //     },
+    //   ])
+    //   .next();
     // .createQueryBuilder('promotedList')
     // .leftJoinAndSelect('promotedList.coin', 'coin')
     // .getMany();
@@ -107,6 +115,60 @@ export class CoinsService {
       data: result,
       count: total,
     };
+  }
+
+  async getListCoin(query) {
+    const defaultQuery = {
+      pageSize: 10,
+      promote: false,
+      watchlist: false,
+      order: 'ASC',
+      ama: false,
+    };
+    const finalQuery = Object.assign(query, defaultQuery);
+    const http = this.httpService
+      .get('https://api.moontok.io/api/coins', {
+        params: finalQuery,
+      })
+      .pipe(map((res) => res.data));
+    const data = await lastValueFrom(http);
+    return data;
+  }
+
+  async getCoinBySlug(slug) {
+    const http = this.httpService
+      .get(
+        `https://moontok.io/_next/data/cVQiqUzDnggxW3TirIYH2/zh/coins/${slug}.json?slug=${slug}`,
+      )
+      .pipe(map((res) => res.data));
+    const data = await lastValueFrom(http);
+    return data;
+  }
+
+  async getCoinTickers() {
+    const http = this.httpService
+      .get(`https://api.moontok.io/api/coin-tickers`)
+      .pipe(map((res) => res.data));
+    const data = await lastValueFrom(http);
+    return data;
+  }
+
+  async getCoinHighlights(query = { gainers: 24, trending: 2 }) {
+    const http = this.httpService
+      .get(`https://api.moontok.io/api/coin-highlights`, {
+        params: query,
+      })
+      .pipe(map((res) => res.data));
+    const data = await lastValueFrom(http);
+    return data;
+  }
+
+  async getChains() {
+    const http = this.httpService
+      .get(`https://api.moontok.io/api/chains`)
+      .pipe(map((res) => res.data));
+    const data = await lastValueFrom(http);
+    return data;
   }
 
   async upVote(slug) {

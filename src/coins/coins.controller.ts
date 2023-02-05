@@ -8,8 +8,10 @@ import {
   UseGuards,
   Delete,
 } from '@nestjs/common';
+import { Query } from '@nestjs/common/decorators';
 import { Throttle } from '@nestjs/throttler';
 import { Request } from 'express';
+import { firstValueFrom } from 'rxjs';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { Roles } from 'src/decorators/roles.decorator';
 import { ROLE } from 'src/enums/role.enum';
@@ -24,8 +26,9 @@ export class CoinsController {
   constructor(private coinService: CoinsService) {}
 
   @Get()
-  async getAllCoin(@Req() request: Request) {
-    return await this.coinService.findAll(request.query);
+  async getAllCoin(@Req() request: Request, @Query() query) {
+    return await this.coinService.getListCoin(query);
+    // return await this.coinService.findAll(request.query);
   }
 
   @Get('/promoted')
@@ -33,9 +36,29 @@ export class CoinsController {
     return this.coinService.getPromotedList();
   }
 
+  @Get('/tickets')
+  getCoinTickers() {
+    return this.coinService.getCoinTickers();
+  }
+
+  @Get('/highlights')
+  getCoinHighlights(@Query() query) {
+    return this.coinService.getCoinHighlights(query);
+  }
+
+  @Get('/chains')
+  getChains() {
+    return this.coinService.getChains();
+  }
+
   @Post('/apply')
   createNewCoin(@Body() body: CreateNewCoinDto) {
     return this.coinService.create(body);
+  }
+
+  @Get('/:slug/detail')
+  getCoinDetail(@Param('slug') slug: string) {
+    return this.coinService.getCoinBySlug(slug);
   }
 
   @UseGuards(CustomThrottlerGuard)
