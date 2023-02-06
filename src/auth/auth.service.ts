@@ -34,13 +34,15 @@ export class AuthService {
   }
 
   async login(user: any) {
+    delete user.password;
     return {
       access_token: this.jwtService.sign({ user }),
+      user,
     };
   }
 
   async signUp(email: string, password: string) {
     const user = await this.usersService.create(email, password);
-    return user
+    return user;
   }
 }
