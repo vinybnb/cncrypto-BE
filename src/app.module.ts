@@ -12,7 +12,7 @@ import { UsersModule } from './users/users.module';
 import { User } from './users/user.entity';
 import { PromotedList } from './coins/promoted-list.entity';
 import { AuthModule } from './auth/auth.module';
-import { HttpModule } from '@nestjs/axios';
+import { ApiModule } from './api/api.module';
 
 @Module({
   imports: [
@@ -45,7 +45,7 @@ import { HttpModule } from '@nestjs/axios';
     CoinsModule,
     UsersModule,
     AuthModule,
-    HttpModule,
+    ApiModule,
   ],
   controllers: [AppController],
   providers: [AppService],
