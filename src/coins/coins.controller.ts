@@ -27,8 +27,7 @@ export class CoinsController {
 
   @Get()
   async getAllCoin(@Req() request: Request, @Query() query) {
-    return await this.coinService.getListCoin(query);
-    // return await this.coinService.findAll(request.query);
+    return await this.coinService.findAll(request.query);
   }
 
   @Get('/promoted')
@@ -36,29 +35,9 @@ export class CoinsController {
     return this.coinService.getPromotedList();
   }
 
-  @Get('/tickets')
-  getCoinTickers() {
-    return this.coinService.getCoinTickers();
-  }
-
-  @Get('/highlights')
-  getCoinHighlights(@Query() query) {
-    return this.coinService.getCoinHighlights(query);
-  }
-
-  @Get('/chains')
-  getChains() {
-    return this.coinService.getChains();
-  }
-
   @Post('/apply')
   createNewCoin(@Body() body: CreateNewCoinDto) {
     return this.coinService.create(body);
-  }
-
-  @Get('/:slug/detail')
-  getCoinDetail(@Param('slug') slug: string) {
-    return this.coinService.getCoinBySlug(slug);
   }
 
   @UseGuards(CustomThrottlerGuard)
