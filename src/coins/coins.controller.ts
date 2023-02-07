@@ -20,7 +20,7 @@ import { CoinsService } from './coins.service';
 import { CustomThrottlerGuard } from './custom-throttler.guard';
 import { CreateNewCoinDto } from './dtos/create-new-coin.dto';
 
-@Controller('coins')
+@Controller('/api/coins')
 export class CoinsController {
   constructor(private coinService: CoinsService) {}
 
@@ -29,7 +29,12 @@ export class CoinsController {
     return await this.coinService.findAll(request.query);
   }
 
-  @Post('/apply')
+  @Get('/:slug')
+  async getCoinBySlug(@Param('slug') slug: string) {
+    return await this.coinService.getCoinBySlug(slug);
+  }
+
+  @Post()
   createNewCoin(@Body() body: CreateNewCoinDto) {
     return this.coinService.create(body);
   }
@@ -41,7 +46,7 @@ export class CoinsController {
     return this.coinService.upVote(slug);
   }
 
-  @Get('/:slug/approval')
+  @Post('/:slug/approval')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(ROLE.ADMIN)
   approveCoin(@Param('slug') slug: string) {

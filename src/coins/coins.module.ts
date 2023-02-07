@@ -4,9 +4,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 
 import { CoinsService } from './coins.service';
 import { CoinsController } from './coins.controller';
-import { Coin as CoinEntity } from './coin.entity';
 import { CustomThrottlerGuard } from './custom-throttler.guard';
-import { PromotedList as PromotedListEntity } from '../promoted-list/promoted-list.entity';
 import { HttpModule } from '@nestjs/axios';
 import { Coin, CoinSchema } from './coin.shema';
 import {
@@ -20,7 +18,6 @@ import {
       { name: Coin.name, schema: CoinSchema },
       { name: PromotedList.name, schema: PromotedListSchema },
     ]),
-    TypeOrmModule.forFeature([CoinEntity, PromotedListEntity]),
     HttpModule,
   ],
   providers: [CoinsService, CustomThrottlerGuard],

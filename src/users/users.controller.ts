@@ -11,14 +11,5 @@ export class UsersController {
   getUser() {
     return 'user';
   }
-
-  // @Post('/signup')
-  // createUser(@Body() body: CreateUserDto) {
-  //   return this.authService.signUp(body.email, body.password);
-  // }
-
-  // @Post('/signin')
-  // login(@Body() body: LoginDto) {
-  //   return this.authService.signIn(body.email, body.password);
-  // }
+  
 }

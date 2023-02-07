@@ -16,33 +16,33 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { Roles } from 'src/decorators/roles.decorator';
 import { ROLE } from 'src/enums/role.enum';
 import { RolesGuard } from 'src/guards/roles.guard';
-import { CoinsService } from './promoted-list.service';
+import { PromotedService } from './promoted-list.service';
 import { CustomThrottlerGuard } from './custom-throttler.guard';
 import { AddPromotedToListDto } from './dtos/add-promoted-to-list.dto';
 
 @Controller('/api/promoted')
-export class CoinsController {
-  constructor(private coinService: CoinsService) {}
+export class PromotedController {
+  constructor(private promotedService: PromotedService) {}
 
-  @Get('/promoted')
+  @Get()
   getPromotedCoin() {
-    return this.coinService.getPromotedList();
+    return this.promotedService.getPromotedList();
   }
 
-  @Post('/:url/addPromote')
+  @Post('/:url')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(ROLE.ADMIN)
   addPromotedListCoin(
     @Param('url') url: string,
     @Body() body: AddPromotedToListDto,
   ) {
-    return this.coinService.addPromotedListCoin(url, body);
+    return this.promotedService.addPromotedListCoin(url, body);
   }
 
-  @Delete('/promoted/:url')
+  @Delete('/:url')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(ROLE.ADMIN)
   deleteCoinInPromotedList(@Param('url') url: string) {
-    return this.coinService.deleteCoinInPromotedList(url);
+    return this.promotedService.deleteCoinInPromotedList(url);
   }
 }

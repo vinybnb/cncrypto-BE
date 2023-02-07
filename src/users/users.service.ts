@@ -4,19 +4,22 @@ import { Repository } from 'typeorm';
 import { User } from './user.entity';
 import { randomBytes, scrypt as _scrypt } from 'crypto';
 import { promisify } from 'util';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { UserDocument } from './users.shema';
 
 const scrypt = promisify(_scrypt);
 
 @Injectable()
 export class UsersService {
-  constructor(@InjectRepository(User) private repo: Repository<User>) {}
+  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
 
   async findOne(email: string): Promise<User | undefined> {
-    return this.repo.findOne({ email });
+    return this.userModel.findOne({ email });
   }
 
   async create(email: string, password: string) {
-    const userCheck = await this.repo.findOne({ email });
+    const userCheck = await this.userModel.findOne({ email });
     if (userCheck) {
       throw new ConflictException(email + ' are exist');
     }
@@ -25,9 +28,8 @@ export class UsersService {
 
     const storePassword = salt + '.' + hash.toString('hex');
 
-    const user = this.repo.create({ email, password: storePassword });
+    const user = await this.userModel.create({ email, password: storePassword });
 
-    await this.repo.save(user);
     return user;
   }
 }

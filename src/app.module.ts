@@ -6,14 +6,13 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
 import { CoinsModule } from './coins/coins.module';
-import { Coin } from './coins/coin.entity';
 
 import { UsersModule } from './users/users.module';
 import { User } from './users/user.entity';
-import { PromotedList } from './promoted-list/promoted-list.entity';
 import { AuthModule } from './auth/auth.module';
 import { ApiModule } from './api/api.module';
 import { ChainModule } from './chains/chains.module';
+import { PromotedModule } from './promoted-list/promoted-list.module';
 import { MongooseModule } from '@nestjs/mongoose';
 
 @Module({
@@ -25,7 +24,7 @@ import { MongooseModule } from '@nestjs/mongoose';
     TypeOrmModule.forRoot({
       type: 'mongodb',
       url: process.env.MONGO_URI || 'mongodb://localhost:27017/china-crypto',
-      entities: [Coin, User, PromotedList],
+      entities: [User],
       useUnifiedTopology: true,
     }),
     // TypeOrmModule.forRoot({
@@ -47,6 +46,7 @@ import { MongooseModule } from '@nestjs/mongoose';
     AuthModule,
     ApiModule,
     ChainModule,
+    PromotedModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -2,21 +2,22 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { MongooseModule } from '@nestjs/mongoose';
 
-import { CoinsService } from './promoted-list.service';
-import { CoinsController } from './promoted-list.controller';
-import { PromotedList as CoinEntity } from './promoted-list.entity';
+import { PromotedService } from './promoted-list.service';
+import { PromotedController } from './promoted-list.controller';
 import { CustomThrottlerGuard } from './custom-throttler.guard';
-import { PromotedList as PromotedListEntity } from './promoted-list.entity';
 import { HttpModule } from '@nestjs/axios';
 import { PromotedList, PromotedListSchema } from './promoted-list.shema';
+import { Coin, CoinSchema } from 'src/coins/coin.shema';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: PromotedList.name, schema: PromotedListSchema }]),
-    TypeOrmModule.forFeature([CoinEntity, PromotedListEntity]),
+    MongooseModule.forFeature([
+      { name: Coin.name, schema: CoinSchema },
+      { name: PromotedList.name, schema: PromotedListSchema },
+    ]),
     HttpModule,
   ],
-  providers: [CoinsService, CustomThrottlerGuard],
-  controllers: [CoinsController],
+  providers: [PromotedService, CustomThrottlerGuard],
+  controllers: [PromotedController],
 })
-export class CoinsModule {}
+export class PromotedModule {}

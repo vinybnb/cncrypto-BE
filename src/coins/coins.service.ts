@@ -8,9 +8,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { InjectModel } from '@nestjs/mongoose';
 import { lastValueFrom, map } from 'rxjs';
 import { Repository, ILike } from 'typeorm';
-import { Coin as CoinEntity } from './coin.entity';
 import { STATUS } from './coin.enum';
-import { PromotedList as PromotedListEntity } from '../promoted-list/promoted-list.entity';
 import { Coin, CoinDocument } from './coin.shema';
 import {
   PromotedList,
@@ -21,10 +19,7 @@ import { Chain } from 'src/chains/coin.shema';
 
 @Injectable()
 export class CoinsService {
-  constructor(
-    @InjectModel(Coin.name) private coinModel: Model<CoinDocument>,
-    @InjectRepository(CoinEntity) private coinRepo: Repository<CoinEntity>,
-  ) {}
+  constructor(@InjectModel(Coin.name) private coinModel: Model<CoinDocument>) {}
 
   async create(body) {
     body = this.toCamelCase(body);
@@ -74,6 +69,11 @@ export class CoinsService {
       totalItem: count,
       data: coins,
     };
+  }
+
+  async getCoinBySlug(slug) {
+    const coin = await this.coinModel.findOne({ slug });
+    return coin;
   }
 
   async upVote(slug) {

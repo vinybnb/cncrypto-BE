@@ -3,7 +3,7 @@ import mongoose, { HydratedDocument } from 'mongoose';
 import { Chain } from 'src/chains/coin.shema';
 import { STATUS } from './coin.enum';
 
-@Schema()
+@Schema({ timestamps: true })
 export class Coin {
   @Prop()
   name: string;
@@ -79,7 +79,7 @@ export type CoinDocument = HydratedDocument<Coin>;
 export const CoinSchema = SchemaFactory.createForClass(Coin);
 
 CoinSchema.virtual('chain124').get(() => {
-  return 123
+  return 123;
 });
 
 CoinSchema.set('toObject', { virtuals: true });

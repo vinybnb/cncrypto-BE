@@ -25,8 +25,6 @@ export class ChainService {
   async createChain(body) {
     const chain = await this.chainModel.create(body);
 
-    return {
-      data: chain,
-    };
+    return chain;
   }
 }
