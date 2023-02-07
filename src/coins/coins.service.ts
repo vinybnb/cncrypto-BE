@@ -5,136 +5,94 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { InjectModel } from '@nestjs/mongoose';
 import { lastValueFrom, map } from 'rxjs';
 import { Repository, ILike } from 'typeorm';
-import { Coin } from './coin.entity';
+import { Coin as CoinEntity } from './coin.entity';
 import { STATUS } from './coin.enum';
-import { PromotedList } from './promoted-list.entity';
+import { PromotedList as PromotedListEntity } from '../promoted-list/promoted-list.entity';
+import { Coin, CoinDocument } from './coin.shema';
+import {
+  PromotedList,
+  PromotedListDocument,
+} from '../promoted-list/promoted-list.shema';
+import { FilterQuery, Model } from 'mongoose';
+import { Chain } from 'src/chains/coin.shema';
 
 @Injectable()
 export class CoinsService {
   constructor(
-    @InjectRepository(Coin) private coinRepo: Repository<Coin>,
-    @InjectRepository(PromotedList)
-    private promotedListRepo: Repository<PromotedList>,
-    private httpService: HttpService,
+    @InjectModel(Coin.name) private coinModel: Model<CoinDocument>,
+    @InjectRepository(CoinEntity) private coinRepo: Repository<CoinEntity>,
   ) {}
 
   async create(body) {
-    const symbol = await this.coinRepo.find({ symbol: body.symbol });
-    const contractAddress = await this.coinRepo.find({
-      contractAddress: body.contractAddress,
-    });
+    body = this.toCamelCase(body);
+    const slug = this.clean_url(body?.name);
 
-    if (symbol?.length || contractAddress?.length) {
-      throw new BadRequestException('Coin has been existed');
+    let countBySLug = await this.coinModel.count({ slug: slug });
+
+    if (countBySLug > 0) {
+      while (true) {
+        countBySLug++;
+        const isExistBySlug = await this.coinModel.exists({
+          slug: slug + '-' + countBySLug,
+        });
+        if (!isExistBySlug) {
+          break;
+        }
+      }
+      body.slug = slug + '-' + countBySLug;
+    } else {
+      body.slug = slug;
     }
 
-    body.slug = this.clean_url(body.name);
-    const coin = this.coinRepo.create(body);
-    return this.coinRepo.save(coin);
-  }
-
-  async getPromotedList() {
-    return this.promotedListRepo.manager
-      .getMongoRepository(PromotedList)
-      .aggregate([
-        {
-          $lookup: {
-            from: 'coin',
-            localField: 'coinId',
-            foreignField: '_id',
-            as: 'coin',
-          },
-        },
-      ])
-      .next();
-  }
-
-  async addPromotedListCoin(url, body) {
-    const coin = await this.getBySlug(url);
-    if (coin.length === 0) {
-      throw new NotFoundException('Project doesn"t existed');
-    }
-
-    const promotedCoin = await this.getPromotedCoin(coin[0].id);
-    if (promotedCoin.length !== 0) {
-      throw new BadRequestException('project added');
-    }
-
-    const promoted = this.promotedListRepo.create({
-      ...body,
-      coinId: coin[0].id,
-    });
-
-    return this.promotedListRepo.save(promoted);
-  }
-
-  async deleteCoinInPromotedList(url) {
-    const coin = await this.getBySlug(url);
-    const promotedCoin = await this.getPromotedCoin(coin[0].id);
-
-    if (coin.length === 0 || promotedCoin.length === 0) {
-      throw new NotFoundException('Project doesn"t existed');
-    }
-    return this.promotedListRepo.remove(promotedCoin);
+    const coin = new this.coinModel(body);
+    await coin.save();
+    return coin;
   }
 
   async findAll(query) {
-    const take = 10;
-    const page = query.page || 1;
-    const skip = (page - 1) * take;
-    const keyword = query.search || '';
-    const chain = query.chain || '';
-    const status = query.status || STATUS.APPROVED;
-    const launchTimeOrder = query?.launch_time === 'ASC' ? 'ASC' : 'DESC';
-    const totalVotesOrder = query?.total_vote || 'DESC';
-    const [result, total] = await this.coinRepo.findAndCount({
-      where: {
-        name: new RegExp(keyword),
-        chain,
-        status,
-      },
-      order: {
-        launchTime: launchTimeOrder,
-        totalVotes: totalVotesOrder,
-      },
-      take: take,
-      skip: skip,
-    });
+    const { chain, search = '', page = 1, pageSize = 10 } = query;
+
+    const filterQuery: FilterQuery<Coin> = {};
+
+    if (search) {
+      filterQuery.$and = [{ name: { $regex: 'keyword', $options: 'g' } }];
+    }
+
+    const coins = await this.coinModel
+      .find(filterQuery)
+      .skip((page - 1) * pageSize)
+      .limit(pageSize)
+      .populate('chains.chain');
+    const count = await this.coinModel.count(filterQuery);
 
     return {
-      data: result,
-      count: total,
+      currentPage: page,
+      totalPage: Math.ceil(count / pageSize),
+      totalItem: count,
+      data: coins,
     };
   }
 
   async upVote(slug) {
-    const coin = await this.findOne(slug);
+    const coin = await this.coinModel.findOne({ slug });
 
-    const totalVotes = coin.totalVotes + 1;
+    coin.totalVotes += 1;
+    await coin.save();
 
-    Object.assign(coin, { totalVotes });
-
-    return this.coinRepo.save(coin);
+    return coin;
   }
 
   async approveCoin(slug) {
-    const coin = await this.findOne(slug);
-    Object.assign(coin, { status: STATUS.APPROVED });
-    return this.coinRepo.save(coin);
-  }
+    const coin = await this.coinModel.findOne({ slug });
 
-  private findOne(slug) {
-    return this.coinRepo.findOne({ slug });
-  }
+    coin.status = STATUS.APPROVED;
+    await coin.save();
+    // Object.assign(coin, { status: STATUS.APPROVED });
 
-  private getPromotedCoin(id: string) {
-    return this.promotedListRepo.find({ coinId: id });
-  }
-
-  private getBySlug(slug: string) {
-    return this.coinRepo.find({ slug });
+    return coin;
   }
 
   private clean_url(s) {
@@ -149,5 +107,26 @@ export class CoinsService {
       .replace(/\-\-+/g, '-') //collapse multiple dashes
       .replace(/^-+/, '') //trim starting dash
       .replace(/-+$/, ''); //trim ending dash
+  }
+
+  private toCamelCase(obj: { [key in string]: any }) {
+    const newObj = {};
+    for (let source in obj) {
+      let output = '';
+      for (let i = 0; i < source.length; i++) {
+        if (source[i] === '_') {
+          i++;
+          output += source[i].toUpperCase();
+        } else {
+          output += source[i];
+        }
+      }
+      if (!Array.isArray(obj[source]) && typeof obj[source] === 'object') {
+        newObj[output] = this.toCamelCase(obj[source]);
+      } else {
+        newObj[output] = obj[source];
+      }
+    }
+    return newObj;
   }
 }

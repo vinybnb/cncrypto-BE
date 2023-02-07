@@ -10,18 +10,18 @@ import { Coin } from './coins/coin.entity';
 
 import { UsersModule } from './users/users.module';
 import { User } from './users/user.entity';
-import { PromotedList } from './coins/promoted-list.entity';
+import { PromotedList } from './promoted-list/promoted-list.entity';
 import { AuthModule } from './auth/auth.module';
 import { ApiModule } from './api/api.module';
+import { ChainModule } from './chains/chains.module';
+import { MongooseModule } from '@nestjs/mongoose';
 
 @Module({
   imports: [
-    // TypeOrmModule.forRoot({
-    //   type: 'sqlite',
-    //   database: 'test.sqlite',
-    //   entities: [Coin],
-    //   synchronize: true,
-    // }),
+    MongooseModule.forRoot(
+      process.env.MONGO_URI || 'mongodb://localhost:27017/china-crypto',
+      { useUnifiedTopology: true },
+    ),
     TypeOrmModule.forRoot({
       type: 'mongodb',
       url: process.env.MONGO_URI || 'mongodb://localhost:27017/china-crypto',
@@ -46,6 +46,7 @@ import { ApiModule } from './api/api.module';
     UsersModule,
     AuthModule,
     ApiModule,
+    ChainModule,
   ],
   controllers: [AppController],
   providers: [AppService],

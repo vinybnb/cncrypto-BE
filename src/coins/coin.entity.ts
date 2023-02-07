@@ -12,7 +12,7 @@ import {
 } from 'typeorm';
 
 import { STATUS, CHAIN } from './coin.enum';
-import { PromotedList } from './promoted-list.entity';
+import { PromotedList } from '../promoted-list/promoted-list.entity';
 
 @Entity()
 export class Coin {
@@ -101,6 +101,12 @@ export class Coin {
 
   @Column({ name: 'total_votes', default: 0 })
   totalVotes: number = 0;
+
+  @Column()
+  link: Array<{
+    type: String;
+    link: String;
+  }>;
 
   @Column({ length: 50 })
   website: string;

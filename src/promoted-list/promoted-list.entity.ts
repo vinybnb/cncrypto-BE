@@ -7,7 +7,7 @@ import {
   OneToOne,
   JoinColumn,
 } from 'typeorm';
-import { Coin } from './coin.entity';
+import { Coin } from '../coins/coin.entity';
 
 @Entity()
 export class PromotedList {

@@ -37,9 +37,9 @@ export class ApiController {
     return this.apiService.getCoinHighlights(query);
   }
 
-  @Get('/chains')
-  getChains() {
-    return this.apiService.getChains();
-  }
+  // @Get('/chains')
+  // getChains() {
+  //   return this.apiService.getChains();
+  // }
 
 }
