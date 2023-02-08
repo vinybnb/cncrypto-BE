@@ -37,26 +37,29 @@ export class Coin {
   @Prop({ default: '' })
   description: string;
 
-  @Prop({ name: 'description_cn', default: '' })
-  descriptionCn: string;
+  @Prop()
+  links: {
+    name: string;
+    link: string;
+  }[];
 
-  @Prop({ name: 'whitelist_link', default: '' })
+  // @Prop({ name: 'description_cn', default: '' })
+  // descriptionCn: string;
+
+  @Prop({ name: 'whitelist_link', default: null })
   whitelistLink: string;
 
-  @Prop({ name: 'launch_date', default: '' })
-  launchDate: string;
+  @Prop({ name: 'launch_date', default: null })
+  launchDate: Date;
 
-  @Prop({ name: 'launch_time', default: '' })
-  launchTime: string;
-
-  @Prop({ name: 'presale_link', default: '' })
+  @Prop({ name: 'presale_link', default: null })
   presaleLink: string;
 
-  @Prop({ name: 'presale_platform', default: '' })
+  @Prop({ name: 'presale_platform', default: null })
   presalePlatform: string;
 
   @Prop({ name: 'presale_time', default: null })
-  presaleTime?: Date;
+  presaleTime: Date;
 
   @Prop({ name: 'approved_at', default: null })
   approvedAt: Date;
@@ -64,14 +67,33 @@ export class Coin {
   @Prop({ name: 'total_votes', default: 0 })
   totalVotes: number;
 
+  @Prop({ name: 'price', default: 0 })
+  price: number;
+
+  @Prop({ name: 'marketcap', default: 0 })
+  marketcap: number;
+
+  @Prop({ name: 'liquidity', default: 0 })
+  liquidity: number;
+
   @Prop({ default: STATUS.APPROVING })
   status: STATUS;
+  
+  @Prop({ name: 'h1', default: 0 })
+  h1: number;
+  
+  @Prop({ name: 'h6', default: 0 })
+  h6: number;
+  
+  @Prop({ name: 'h24', default: 0 })
+  h24: number;
+  
+  @Prop({ name: 'tnx_6', default: 0 })
+  tnx_6: number;
+  
+  @Prop({ name: 'tnx_24', default: 0 })
+  tnx_24: number;
 
-  @Prop()
-  links: {
-    name: string;
-    link: string;
-  }[];
 }
 
 export type CoinDocument = HydratedDocument<Coin>;
