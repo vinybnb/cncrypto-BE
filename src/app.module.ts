@@ -18,12 +18,12 @@ import { MongooseModule } from '@nestjs/mongoose';
 @Module({
   imports: [
     MongooseModule.forRoot(
-      process.env.MONGO_URI || 'mongodb://localhost:27017/china-crypto',
+      process.env.MONGO_URI || 'mongodb+srv://tenkuuninja:tenkuuninja@cluster0.uq1l6.mongodb.net/china-crypto?retryWrites=true&w=majority',
       { useUnifiedTopology: true },
     ),
     TypeOrmModule.forRoot({
       type: 'mongodb',
-      url: process.env.MONGO_URI || 'mongodb://localhost:27017/china-crypto',
+      url: process.env.MONGO_URI || 'mongodb+srv://tenkuuninja:tenkuuninja@cluster0.uq1l6.mongodb.net/china-crypto?retryWrites=true&w=majority',
       entities: [User],
       useUnifiedTopology: true,
     }),
