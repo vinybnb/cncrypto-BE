@@ -2,9 +2,11 @@ import { Controller, Get } from '@nestjs/common';
 import { Param, Query, Req } from '@nestjs/common/decorators';
 import { Post } from '@nestjs/common/decorators/http/request-mapping.decorator';
 import { Body } from '@nestjs/common/decorators/http/route-params.decorator';
+import { ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
 import { ChainService } from './chains.service';
 
+@ApiTags('Chains')
 @Controller('/api/chains')
 export class ChainController {
   constructor(private readonly chainService: ChainService) {}

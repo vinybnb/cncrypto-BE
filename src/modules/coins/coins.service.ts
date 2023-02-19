@@ -15,14 +15,14 @@ import {
   PromotedListDocument,
 } from '../promoted-list/promoted-list.shema';
 import { FilterQuery, Model } from 'mongoose';
-import { Chain } from 'src/chains/coin.shema';
+import { Chain } from '@modules/chains/coin.shema';
+import { CreateNewCoinDto } from './dtos/create-new-coin.dto';
 
 @Injectable()
 export class CoinsService {
   constructor(@InjectModel(Coin.name) private coinModel: Model<CoinDocument>) {}
 
-  async create(body) {
-    body = this.toCamelCase(body);
+  async create(body: CreateNewCoinDto) {
     const slug = this.clean_url(body?.name);
 
     let countBySLug = await this.coinModel.count({ slug: slug });
@@ -59,8 +59,7 @@ export class CoinsService {
     const coins = await this.coinModel
       .find(filterQuery)
       .skip((page - 1) * pageSize)
-      .limit(pageSize)
-      .populate('chains.chain');
+      .limit(pageSize);
     const count = await this.coinModel.count(filterQuery);
 
     return {
@@ -72,6 +71,11 @@ export class CoinsService {
   }
 
   async getCoinBySlug(slug) {
+    const coin = await this.coinModel.findOne({ slug });
+    return coin;
+  }
+
+  async updateCoinLogoBySlug(slug: string, file: Express.Multer.File) {
     const coin = await this.coinModel.findOne({ slug });
     return coin;
   }

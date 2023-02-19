@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
-import { Chain } from 'src/chains/coin.shema';
+import { Chain } from '@modules/chains/coin.shema';
 import { STATUS } from './coin.enum';
 
 @Schema({ timestamps: true })
@@ -17,22 +17,28 @@ export class Coin {
   @Prop()
   logo: string;
 
-  @Prop({
-    type: [
-      {
-        chain: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: 'Chain',
-        },
-        contractAddress: String,
-      },
-    ],
-    default: [],
-  })
-  chains: {
-    chain: Chain;
-    contractAddress: string;
-  }[];
+  @Prop({ name: 'chain_id', default: null })
+  chainId: string;
+
+  @Prop({ name: 'contract_address', default: null })
+  contractAddress: string;
+
+  // @Prop({
+  //   type: [
+  //     {
+  //       chain: {
+  //         type: mongoose.Schema.Types.ObjectId,
+  //         ref: 'Chain',
+  //       },
+  //       contractAddress: String,
+  //     },
+  //   ],
+  //   default: [],
+  // })
+  // chains: {
+  //   chain: Chain;
+  //   contractAddress: string;
+  // }[];
 
   @Prop({ default: '' })
   description: string;
@@ -99,10 +105,6 @@ export class Coin {
 export type CoinDocument = HydratedDocument<Coin>;
 
 export const CoinSchema = SchemaFactory.createForClass(Coin);
-
-CoinSchema.virtual('chain124').get(() => {
-  return 123;
-});
 
 CoinSchema.set('toObject', { virtuals: true });
 CoinSchema.set('toJSON', { virtuals: true });

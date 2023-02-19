@@ -1,32 +1,25 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ThrottlerModule } from '@nestjs/throttler';
+import { ServeStaticModule } from '@nestjs/serve-static';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { MONGO_URI } from './configs/database';
 
-import { CoinsModule } from './coins/coins.module';
+import { CoinsModule } from '@modules/coins/coins.module';
 
-import { UsersModule } from './users/users.module';
-import { User } from './users/user.entity';
-import { AuthModule } from './auth/auth.module';
-import { ApiModule } from './api/api.module';
-import { ChainModule } from './chains/chains.module';
-import { PromotedModule } from './promoted-list/promoted-list.module';
+import { UsersModule } from '@modules/users/users.module';
+import { AuthModule } from '@modules/auth/auth.module';
+import { ApiModule } from '@modules/api/api.module';
+import { ChainModule } from '@modules/chains/chains.module';
+import { PromotedModule } from '@modules/promoted-list/promoted-list.module';
 import { MongooseModule } from '@nestjs/mongoose';
+import { join } from 'path';
 
 @Module({
   imports: [
-    MongooseModule.forRoot(
-      process.env.MONGO_URI || 'mongodb+srv://tenkuuninja:tenkuuninja@cluster0.uq1l6.mongodb.net/china-crypto?retryWrites=true&w=majority',
-      { useUnifiedTopology: true },
-    ),
-    TypeOrmModule.forRoot({
-      type: 'mongodb',
-      url: process.env.MONGO_URI || 'mongodb+srv://tenkuuninja:tenkuuninja@cluster0.uq1l6.mongodb.net/china-crypto?retryWrites=true&w=majority',
-      entities: [User],
-      useUnifiedTopology: true,
-    }),
+    MongooseModule.forRoot(MONGO_URI, { useUnifiedTopology: true }),
     // TypeOrmModule.forRoot({
     //   type: 'postgres',
     //   host: 'localhost',
@@ -40,6 +33,9 @@ import { MongooseModule } from '@nestjs/mongoose';
     ThrottlerModule.forRoot({
       ttl: 60,
       limit: 10,
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, 'public'),
     }),
     CoinsModule,
     UsersModule,

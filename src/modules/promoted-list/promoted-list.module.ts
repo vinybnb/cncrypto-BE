@@ -7,7 +7,7 @@ import { PromotedController } from './promoted-list.controller';
 import { CustomThrottlerGuard } from './custom-throttler.guard';
 import { HttpModule } from '@nestjs/axios';
 import { PromotedList, PromotedListSchema } from './promoted-list.shema';
-import { Coin, CoinSchema } from 'src/coins/coin.shema';
+import { Coin, CoinSchema } from '@modules/coins/coin.shema';
 
 @Module({
   imports: [

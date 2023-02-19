@@ -8,18 +8,28 @@ import {
   UseGuards,
   Delete,
 } from '@nestjs/common';
-import { Query } from '@nestjs/common/decorators';
+import { Patch, Query, UploadedFile, UseInterceptors } from '@nestjs/common';
+import {
+  ApiBody,
+  ApiConsumes,
+  ApiOkResponse,
+  ApiProduces,
+  ApiTags,
+} from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
 import { Request } from 'express';
 import { firstValueFrom } from 'rxjs';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { Roles } from 'src/decorators/roles.decorator';
-import { ROLE } from 'src/enums/role.enum';
-import { RolesGuard } from 'src/guards/roles.guard';
+import { Roles } from 'src/common/decorators/roles.decorator';
+import { ROLE } from 'src/common/enums/role.enum';
+import { RolesGuard } from 'src/common/guards/roles.guard';
 import { CoinsService } from './coins.service';
 import { CustomThrottlerGuard } from './custom-throttler.guard';
 import { CreateNewCoinDto } from './dtos/create-new-coin.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { logoStorage } from 'src/common/helpers/storage.helper';
 
+@ApiTags('Coins')
 @Controller('/api/coins')
 export class CoinsController {
   constructor(private coinService: CoinsService) {}
@@ -29,14 +39,33 @@ export class CoinsController {
     return await this.coinService.findAll(request.query);
   }
 
-  @Get('/:slug')
+  @Get('/:slug/detail')
   async getCoinBySlug(@Param('slug') slug: string) {
     return await this.coinService.getCoinBySlug(slug);
   }
 
   @Post()
-  createNewCoin(@Body() body: CreateNewCoinDto) {
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(FileInterceptor('logo', { storage: logoStorage }))
+  createNewCoin(
+    @Body() body: CreateNewCoinDto,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    body.logo = file.filename;
     return this.coinService.create(body);
+  }
+
+  @Post('/:slug/logo')
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(FileInterceptor('logo'))
+  async updateCoinLogo(
+    @Param('slug') slug: string,
+    @UploadedFile() file: Express.Multer.File,
+    @Body() body,
+  ) {
+    console.log(typeof file, file);
+    console.log(body);
+    return await this.coinService.updateCoinLogoBySlug(slug, file);
   }
 
   @UseGuards(CustomThrottlerGuard)
@@ -52,5 +81,4 @@ export class CoinsController {
   approveCoin(@Param('slug') slug: string) {
     return this.coinService.approveCoin(slug);
   }
-
 }

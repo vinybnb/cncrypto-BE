@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
-import { ROLE } from '../enums/role.enum';
+import { ROLE } from '@common/enums/role.enum';
 
 @Schema({ timestamps: true })
 export class User {
