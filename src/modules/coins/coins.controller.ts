@@ -10,6 +10,7 @@ import {
 } from '@nestjs/common';
 import { Patch, Query, UploadedFile, UseInterceptors } from '@nestjs/common';
 import {
+  ApiBearerAuth,
   ApiBody,
   ApiConsumes,
   ApiOkResponse,
@@ -30,6 +31,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { logoStorage } from 'src/common/helpers/storage.helper';
 
 @ApiTags('Coins')
+@ApiBearerAuth()
 @Controller('/api/coins')
 export class CoinsController {
   constructor(private coinService: CoinsService) {}
