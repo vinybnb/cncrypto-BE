@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
-import { Coin } from '@modules/coins/coin.shema';
+import { Coin } from '@/modules/coins/coin.shema';
 
 @Schema({ collection: 'promoted_list', timestamps: { createdAt: true } })
 export class PromotedList {

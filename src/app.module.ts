@@ -7,7 +7,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MONGO_URI } from './configs/database';
 
-import { CoinsModule } from '@modules/coins/coins.module';
+import { CoinsModule } from '@/modules/coins/coins.module';
 
 import { UsersModule } from '@modules/users/users.module';
 import { AuthModule } from '@modules/auth/auth.module';

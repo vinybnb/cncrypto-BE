@@ -18,39 +18,16 @@ export class Coin {
   logo: string;
 
   @Prop({ name: 'chain_id', default: null })
-  chainId: string;
+  chainId: number;
 
   @Prop({ name: 'contract_address', default: null })
   contractAddress: string;
 
-  // @Prop({
-  //   type: [
-  //     {
-  //       chain: {
-  //         type: mongoose.Schema.Types.ObjectId,
-  //         ref: 'Chain',
-  //       },
-  //       contractAddress: String,
-  //     },
-  //   ],
-  //   default: [],
-  // })
-  // chains: {
-  //   chain: Chain;
-  //   contractAddress: string;
-  // }[];
-
   @Prop({ default: '' })
   description: string;
 
-  @Prop()
-  links: {
-    name: string;
-    link: string;
-  }[];
-
-  // @Prop({ name: 'description_cn', default: '' })
-  // descriptionCn: string;
+  @Prop({ default: STATUS.APPROVING })
+  status: STATUS;
 
   @Prop({ name: 'whitelist_link', default: null })
   whitelistLink: string;
@@ -59,13 +36,13 @@ export class Coin {
   launchDate: Date;
 
   @Prop({ name: 'presale_link', default: null })
-  presaleLink: string;
+  preSaleLink: string;
 
   @Prop({ name: 'presale_platform', default: null })
-  presalePlatform: string;
+  preSalePlatform: string;
 
   @Prop({ name: 'presale_time', default: null })
-  presaleTime: Date;
+  preSaleTime: Date;
 
   @Prop({ name: 'approved_at', default: null })
   approvedAt: Date;
@@ -77,14 +54,11 @@ export class Coin {
   price: number;
 
   @Prop({ name: 'marketcap', default: 0 })
-  marketcap: number;
+  marketCap: number;
 
   @Prop({ name: 'liquidity', default: 0 })
   liquidity: number;
 
-  @Prop({ default: STATUS.APPROVING })
-  status: STATUS;
-  
   @Prop({ name: 'h1', default: 0 })
   h1: number;
   
@@ -95,10 +69,25 @@ export class Coin {
   h24: number;
   
   @Prop({ name: 'tnx_6', default: 0 })
-  tnx_6: number;
+  tnx6: number;
   
   @Prop({ name: 'tnx_24', default: 0 })
-  tnx_24: number;
+  tnx24: number;
+
+  @Prop({ name: 'link_website', default: '' })
+  linkWebsite: string;
+
+  @Prop({ name: 'link_telegram', default: '' })
+  linkTelegram: string;
+
+  @Prop({ name: 'link_twitter', default: '' })
+  linkTwitter: string;
+
+  @Prop({ name: 'link_discord', default: '' })
+  linkDiscord: string;
+
+  @Prop({ name: 'link_medium', default: '' })
+  linkMedium: string;
 
 }
 

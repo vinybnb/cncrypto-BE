@@ -18,13 +18,13 @@ export class ChainService {
       currentPage: 1,
       totalPage: 1,
       totalItem: chain?.length,
-      data: chain
-    }
+      data: chain,
+    };
   }
 
   async createChain(body) {
     const chain = await this.chainModel.create(body);
 
-    return chain;
+    return { data: chain };
   }
 }

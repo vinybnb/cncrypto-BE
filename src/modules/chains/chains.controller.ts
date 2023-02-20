@@ -12,12 +12,12 @@ import { ChainDto } from './dto/chain.dto';
 export class ChainController {
   constructor(private readonly chainService: ChainService) {}
 
-  @Get()
+  @Get('/get-all')
   getChains() {
     return this.chainService.getChains();
   }
 
-  @Post()
+  @Post('/create')
   @ApiConsumes('application/x-www-form-urlencoded')
   createChain(@Body() body: ChainDto) {
     return this.chainService.createChain(body);

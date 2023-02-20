@@ -16,14 +16,15 @@ import {
 } from '../promoted-list/promoted-list.shema';
 import { FilterQuery, Model } from 'mongoose';
 import { Chain } from '@modules/chains/coin.shema';
-import { CreateNewCoinDto } from './dtos/create-new-coin.dto';
+import { CoinDto } from './dtos/coin.dto';
+import { toSlug } from '@common/helpers/string.helper';
 
 @Injectable()
 export class CoinsService {
   constructor(@InjectModel(Coin.name) private coinModel: Model<CoinDocument>) {}
 
-  async create(body: CreateNewCoinDto) {
-    const slug = this.clean_url(body?.name);
+  async create(body: CoinDto) {
+    const slug = toSlug(body?.name);
 
     let countBySLug = await this.coinModel.count({ slug: slug });
 
@@ -44,7 +45,7 @@ export class CoinsService {
 
     const coin = new this.coinModel(body);
     await coin.save();
-    return coin;
+    return { data: coin };
   }
 
   async findAll(query) {
@@ -72,12 +73,12 @@ export class CoinsService {
 
   async getCoinBySlug(slug) {
     const coin = await this.coinModel.findOne({ slug });
-    return coin;
+    return { data: coin };
   }
 
   async updateCoinLogoBySlug(slug: string, file: Express.Multer.File) {
     const coin = await this.coinModel.findOne({ slug });
-    return coin;
+    return { data: coin };
   }
 
   async upVote(slug) {
@@ -86,7 +87,7 @@ export class CoinsService {
     coin.totalVotes += 1;
     await coin.save();
 
-    return coin;
+    return { data: coin };
   }
 
   async approveCoin(slug) {
@@ -96,41 +97,6 @@ export class CoinsService {
     await coin.save();
     // Object.assign(coin, { status: STATUS.APPROVED });
 
-    return coin;
-  }
-
-  private clean_url(s) {
-    return s
-      .toString()
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '') //remove diacritics
-      .toLowerCase()
-      .replace(/\s+/g, '-') //spaces to dashes
-      .replace(/&/g, '-and-') //ampersand to and
-      .replace(/[^\w\-]+/g, '') //remove non-words
-      .replace(/\-\-+/g, '-') //collapse multiple dashes
-      .replace(/^-+/, '') //trim starting dash
-      .replace(/-+$/, ''); //trim ending dash
-  }
-
-  private toCamelCase(obj: { [key in string]: any }) {
-    const newObj = {};
-    for (let source in obj) {
-      let output = '';
-      for (let i = 0; i < source.length; i++) {
-        if (source[i] === '_') {
-          i++;
-          output += source[i].toUpperCase();
-        } else {
-          output += source[i];
-        }
-      }
-      if (!Array.isArray(obj[source]) && typeof obj[source] === 'object') {
-        newObj[output] = this.toCamelCase(obj[source]);
-      } else {
-        newObj[output] = obj[source];
-      }
-    }
-    return newObj;
+    return { data: coin };
   }
 }

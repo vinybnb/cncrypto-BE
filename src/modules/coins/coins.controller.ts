@@ -26,9 +26,10 @@ import { ROLE } from 'src/common/enums/role.enum';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { CoinsService } from './coins.service';
 import { CustomThrottlerGuard } from './custom-throttler.guard';
-import { CreateNewCoinDto } from './dtos/create-new-coin.dto';
+import { CoinDto } from './dtos/coin.dto';
+import { CoinSlugDto } from './dtos/coin-slug.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { logoStorage } from 'src/common/helpers/storage.helper';
+import { logoStorage } from '@common/helpers/storage.helper';
 
 @ApiTags('Coins')
 @ApiBearerAuth()
@@ -36,51 +37,37 @@ import { logoStorage } from 'src/common/helpers/storage.helper';
 export class CoinsController {
   constructor(private coinService: CoinsService) {}
 
-  @Get()
+  @Get('/get-all')
+  @ApiConsumes('application/x-www-form-urlencoded')
   async getAllCoin(@Req() request: Request, @Query() query) {
     return await this.coinService.findAll(request.query);
   }
 
-  @Get('/:slug/detail')
-  async getCoinBySlug(@Param('slug') slug: string) {
-    return await this.coinService.getCoinBySlug(slug);
+  @Get('/detail')
+  @ApiConsumes('application/x-www-form-urlencoded')
+  async getCoinBySlug(@Query() query: CoinSlugDto) {
+    return await this.coinService.getCoinBySlug(query.slug);
   }
 
-  @Post()
-  @ApiConsumes('multipart/form-data')
-  @UseInterceptors(FileInterceptor('logo', { storage: logoStorage }))
-  createNewCoin(
-    @Body() body: CreateNewCoinDto,
-    @UploadedFile() file: Express.Multer.File,
-  ) {
-    body.logo = file.filename;
+  @Post('/create')
+  @ApiConsumes('application/x-www-form-urlencoded')
+  createNewCoin(@Body() body: CoinDto) {
     return this.coinService.create(body);
   }
 
-  @Post('/:slug/logo')
-  @ApiConsumes('multipart/form-data')
-  @UseInterceptors(FileInterceptor('logo'))
-  async updateCoinLogo(
-    @Param('slug') slug: string,
-    @UploadedFile() file: Express.Multer.File,
-    @Body() body,
-  ) {
-    console.log(typeof file, file);
-    console.log(body);
-    return await this.coinService.updateCoinLogoBySlug(slug, file);
-  }
-
   @UseGuards(CustomThrottlerGuard)
+  @ApiConsumes('application/x-www-form-urlencoded')
   @Throttle(1, 180)
-  @Post('/:slug/vote')
-  upVote(@Param('slug') slug: string) {
-    return this.coinService.upVote(slug);
+  @Post('/vote')
+  upVote(@Body() body: CoinSlugDto) {
+    return this.coinService.upVote(body.slug);
   }
 
-  @Post('/:slug/approval')
+  @Post('/approval')
+  @ApiConsumes('application/x-www-form-urlencoded')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(ROLE.ADMIN)
-  approveCoin(@Param('slug') slug: string) {
-    return this.coinService.approveCoin(slug);
+  approveCoin(@Body() body: CoinSlugDto) {
+    return this.coinService.approveCoin(body.slug);
   }
 }
