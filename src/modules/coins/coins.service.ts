@@ -16,38 +16,16 @@ import {
 } from '../promoted-list/promoted-list.shema';
 import { FilterQuery, Model, PipelineStage } from 'mongoose';
 import { Chain } from '@modules/chains/coin.shema';
-import { CoinDto } from './dtos/coin.dto';
+import { CreateCoinDto } from './dtos/create-coin.dto';
 import { toSlug } from '@common/helpers/string.helper';
 import { FilterCoinDto } from './dtos/filter-coin.dto';
 
 @Injectable()
 export class CoinsService {
-  constructor(@InjectModel(Coin.name) private coinModel: Model<CoinDocument>) {}
-
-  async create(body: CoinDto) {
-    const slug = toSlug(body?.name);
-
-    let countBySLug = await this.coinModel.count({ slug: slug });
-
-    if (countBySLug > 0) {
-      while (true) {
-        countBySLug++;
-        const isExistBySlug = await this.coinModel.exists({
-          slug: slug + '-' + countBySLug,
-        });
-        if (!isExistBySlug) {
-          break;
-        }
-      }
-      body.slug = slug + '-' + countBySLug;
-    } else {
-      body.slug = slug;
-    }
-
-    const coin = new this.coinModel(body);
-    await coin.save();
-    return { data: coin };
-  }
+  constructor(
+    @InjectModel(Coin.name) private coinModel: Model<CoinDocument>,
+    private readonly httpService: HttpService,
+  ) {}
 
   async findAll(filter: FilterCoinDto) {
     const {
@@ -55,16 +33,24 @@ export class CoinsService {
       approved,
       promoted,
       search = '',
+      sortBy = 'createdAt',
+      sortDirection = 'desc',
       page = 1,
       pageSize = 10,
     } = filter;
 
-    const filterQuery: FilterQuery<Coin> = {};
-
     const pipeline: PipelineStage[] = [];
 
     if (search) {
-      pipeline.push({ $match: { name: { $regex: 'keyword', $options: 'g' } } });
+      pipeline.push({
+        $match: {
+          $or: [
+            { name: { $regex: search, $options: 'gi' } },
+            { symbol: { $regex: search, $options: 'gi' } },
+            { contractAddress: { $regex: search, $options: 'gi' } },
+          ],
+        },
+      });
     }
 
     if (chainId) {
@@ -79,11 +65,17 @@ export class CoinsService {
       pipeline.push({ $match: { approvedAt: { $ne: null } } });
     }
 
-    const count = await this.coinModel.aggregate([
+    const countAggregate = await this.coinModel.aggregate([
       ...pipeline,
       { $count: 'count' },
     ]);
+    const count = countAggregate?.[0]?.count;
 
+    pipeline.push({
+      $sort: { [sortBy]: sortDirection.toLowerCase() === 'asc' ? 1 : -1 },
+    });
+    pipeline.push({ $skip: (page - 1) * pageSize });
+    pipeline.push({ $limit: +pageSize });
     pipeline.push({
       $lookup: {
         from: 'chains',
@@ -92,10 +84,7 @@ export class CoinsService {
         as: 'chain',
       },
     });
-
     pipeline.push({ $addFields: { chain: { $arrayElemAt: ['$chain', 0] } } });
-    pipeline.push({ $skip: (page - 1) * pageSize });
-    pipeline.push({ $limit: +pageSize });
 
     const coins = await this.coinModel.aggregate(pipeline);
 
@@ -123,6 +112,45 @@ export class CoinsService {
     ]);
     const coin = coins?.[0] ? coins[0] : null;
     // const coin = await this.coinModel.findOne({ slug });
+    return { data: coin };
+  }
+
+  async create(body: CreateCoinDto) {
+    const slug = toSlug(body?.name);
+
+    const http = this.httpService.get(
+      'https://api.dexscreener.com/latest/dex/tokens/' + body.contractAddress,
+    );
+
+    const res = await lastValueFrom(http);
+
+    const tokenInfo = res.data?.pairs?.find(
+      (item) => item?.baseToken?.address === body.contractAddress,
+    );
+
+    let countBySLug = await this.coinModel.count({ slug: slug });
+
+    if (countBySLug > 0) {
+      while (true) {
+        countBySLug++;
+        const isExistBySlug = await this.coinModel.exists({
+          slug: slug + '-' + countBySLug,
+        });
+        if (!isExistBySlug) {
+          break;
+        }
+      }
+      body.slug = slug + '-' + countBySLug;
+    } else {
+      body.slug = slug;
+    }
+
+    const coin = new this.coinModel(body);
+
+    if (tokenInfo) {
+      console.log(tokenInfo);
+    }
+    await coin.save();
     return { data: coin };
   }
 

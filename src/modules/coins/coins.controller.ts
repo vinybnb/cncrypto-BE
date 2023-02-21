@@ -26,7 +26,7 @@ import { ROLE } from 'src/common/enums/role.enum';
 import { RolesGuard } from 'src/common/guards/roles.guard';
 import { CoinsService } from './coins.service';
 import { CustomThrottlerGuard } from './custom-throttler.guard';
-import { CoinDto } from './dtos/coin.dto';
+import { CreateCoinDto } from './dtos/create-coin.dto';
 import { CoinSlugDto } from './dtos/coin-slug.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { logoStorage } from '@common/helpers/storage.helper';
@@ -52,7 +52,7 @@ export class CoinsController {
 
   @Post('/create')
   @ApiConsumes('application/x-www-form-urlencoded')
-  createNewCoin(@Body() body: CoinDto) {
+  createNewCoin(@Body() body: CreateCoinDto) {
     return this.coinService.create(body);
   }
 

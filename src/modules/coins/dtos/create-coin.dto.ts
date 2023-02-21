@@ -1,9 +1,18 @@
-import { IsEnum, IsString, Length, IsNotEmpty, IsArray, IsNumber } from 'class-validator';
+import {
+  IsEnum,
+  IsString,
+  Length,
+  IsNotEmpty,
+  IsArray,
+  IsNumber,
+  IsNumberString,
+  ValidateIf,
+} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsFile } from '@common/decorators/validator.decorator';
 import { CHAIN } from '../coin.enum';
 
-export class CoinDto {
+export class CreateCoinDto {
   @IsString()
   @Length(1, 100)
   @ApiProperty({ required: true })
@@ -23,12 +32,15 @@ export class CoinDto {
   @ApiProperty({ required: false })
   slug: string;
 
+  @IsString()
+  @IsNotEmpty()
   @ApiProperty({ required: true })
   description: string;
 
   @IsNumber()
   @IsNotEmpty()
-  @ApiProperty({ required: true })
+  @ValidateIf((object, value) => Number.isNaN(+value))
+  @ApiProperty({ required: true, type: 'number' })
   chainId: number;
 
   @IsString()
