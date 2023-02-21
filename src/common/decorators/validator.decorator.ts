@@ -2,6 +2,8 @@ import {
   registerDecorator,
   ValidationArguments,
   ValidatorOptions,
+  ValidateIf,
+  ValidationOptions,
 } from 'class-validator';
 
 interface IsFileOptions {
@@ -36,4 +38,11 @@ export function IsFile(
       },
     });
   };
+}
+
+export function IsNullable(validationOptions?: ValidationOptions) {
+  return ValidateIf(
+    (_object, value) => value !== undefined,
+    validationOptions,
+  );
 }

@@ -17,10 +17,13 @@ export class Coin {
   @Prop()
   logo: string;
 
-  @Prop({ name: 'chain_id', default: null })
+  @Prop({ default: null })
   chainId: number;
 
-  @Prop({ name: 'contract_address', default: null })
+  // @Prop({ virtual: {ref: 'chain'} })
+  // chain: number;
+
+  @Prop({ default: null })
   contractAddress: string;
 
   @Prop({ default: '' })
@@ -29,71 +32,81 @@ export class Coin {
   @Prop({ default: STATUS.APPROVING })
   status: STATUS;
 
-  @Prop({ name: 'whitelist_link', default: null })
+  @Prop({ default: null })
   whitelistLink: string;
 
-  @Prop({ name: 'launch_date', default: null })
+  @Prop({ default: null })
   launchDate: Date;
 
-  @Prop({ name: 'presale_link', default: null })
+  @Prop({ default: null })
   preSaleLink: string;
 
-  @Prop({ name: 'presale_platform', default: null })
+  @Prop({ default: null })
   preSalePlatform: string;
 
-  @Prop({ name: 'presale_time', default: null })
+  @Prop({ default: null })
   preSaleTime: Date;
 
-  @Prop({ name: 'approved_at', default: null })
+  @Prop({ default: null })
   approvedAt: Date;
 
-  @Prop({ name: 'total_votes', default: 0 })
+  @Prop({ default: 0 })
   totalVotes: number;
 
-  @Prop({ name: 'price', default: 0 })
+  @Prop({ default: 0 })
   price: number;
 
-  @Prop({ name: 'marketcap', default: 0 })
+  @Prop({ default: 0 })
   marketCap: number;
 
-  @Prop({ name: 'liquidity', default: 0 })
+  @Prop({ default: 0 })
   liquidity: number;
 
-  @Prop({ name: 'h1', default: 0 })
+  @Prop({ default: 0 })
   h1: number;
-  
-  @Prop({ name: 'h6', default: 0 })
+
+  @Prop({ default: 0 })
   h6: number;
-  
-  @Prop({ name: 'h24', default: 0 })
+
+  @Prop({ default: 0 })
   h24: number;
-  
-  @Prop({ name: 'tnx_6', default: 0 })
+
+  @Prop({ default: 0 })
   tnx6: number;
-  
-  @Prop({ name: 'tnx_24', default: 0 })
+
+  @Prop({ default: 0 })
   tnx24: number;
 
-  @Prop({ name: 'link_website', default: '' })
+  @Prop({ default: '' })
   linkWebsite: string;
 
-  @Prop({ name: 'link_telegram', default: '' })
+  @Prop({ default: '' })
   linkTelegram: string;
 
-  @Prop({ name: 'link_twitter', default: '' })
+  @Prop({ default: '' })
   linkTwitter: string;
 
-  @Prop({ name: 'link_discord', default: '' })
+  @Prop({ default: '' })
   linkDiscord: string;
 
-  @Prop({ name: 'link_medium', default: '' })
+  @Prop({ default: '' })
   linkMedium: string;
-
 }
 
 export type CoinDocument = HydratedDocument<Coin>;
 
 export const CoinSchema = SchemaFactory.createForClass(Coin);
+
+// CoinSchema.virtual('chain', {
+//   ref: 'chains',
+//   localField: 'chainId',
+//   foreignField: 'scanValue',
+//   justOne: true,
+// });
+
+// CoinSchema.virtual('chain124').get((coin) => {
+//   return 123;
+// });
 
 CoinSchema.set('toObject', { virtuals: true });
 CoinSchema.set('toJSON', { virtuals: true });

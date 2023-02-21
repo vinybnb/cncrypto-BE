@@ -30,6 +30,7 @@ import { CoinDto } from './dtos/coin.dto';
 import { CoinSlugDto } from './dtos/coin-slug.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { logoStorage } from '@common/helpers/storage.helper';
+import { FilterCoinDto } from './dtos/filter-coin.dto';
 
 @ApiTags('Coins')
 @ApiBearerAuth()
@@ -39,8 +40,8 @@ export class CoinsController {
 
   @Get('/get-all')
   @ApiConsumes('application/x-www-form-urlencoded')
-  async getAllCoin(@Req() request: Request, @Query() query) {
-    return await this.coinService.findAll(request.query);
+  async getAllCoin(@Query() query: FilterCoinDto) {
+    return await this.coinService.findAll(query);
   }
 
   @Get('/detail')
@@ -63,7 +64,7 @@ export class CoinsController {
     return this.coinService.upVote(body.slug);
   }
 
-  @Post('/approval')
+  @Post('/approve')
   @ApiConsumes('application/x-www-form-urlencoded')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(ROLE.ADMIN)
