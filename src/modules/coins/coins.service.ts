@@ -14,7 +14,7 @@ import {
   PromotedList,
   PromotedListDocument,
 } from '../promoted-list/promoted-list.shema';
-import { FilterQuery, Model, PipelineStage } from 'mongoose';
+import mongoose, { FilterQuery, Model, PipelineStage } from 'mongoose';
 import { Chain } from '@modules/chains/coin.shema';
 import { CreateCoinDto } from './dtos/create-coin.dto';
 import { toSlug } from '@common/helpers/string.helper';
@@ -24,6 +24,8 @@ import { FilterCoinDto } from './dtos/filter-coin.dto';
 export class CoinsService {
   constructor(
     @InjectModel(Coin.name) private coinModel: Model<CoinDocument>,
+    @InjectModel(PromotedList.name)
+    private promotedModel: Model<PromotedListDocument>,
     private readonly httpService: HttpService,
   ) {}
 
@@ -54,7 +56,7 @@ export class CoinsService {
     }
 
     if (chainId) {
-      pipeline.push({ $match: { chainId: chainId } });
+      pipeline.push({ $match: { chainId: +chainId } });
     }
 
     if (approved === 'false') {
@@ -65,11 +67,25 @@ export class CoinsService {
       pipeline.push({ $match: { approvedAt: { $ne: null } } });
     }
 
+    if (promoted === 'true') {
+      const now = new Date().toISOString();
+      const promoted = await this.promotedModel.find(
+        {
+          startTime: { $lte: now },
+          expiredTime: { $gte: now },
+        },
+        { coin: 1 },
+      );
+      pipeline.push({
+        $match: { _id: { $in: promoted?.map((item) => item?.coin) } },
+      });
+    }
+
     const countAggregate = await this.coinModel.aggregate([
       ...pipeline,
       { $count: 'count' },
     ]);
-    const count = countAggregate?.[0]?.count;
+    const count = countAggregate?.[0]?.count || 0;
 
     pipeline.push({
       $sort: { [sortBy]: sortDirection.toLowerCase() === 'asc' ? 1 : -1 },
@@ -90,7 +106,7 @@ export class CoinsService {
 
     return {
       currentPage: page,
-      // totalPage: Math.ceil(count[0] / pageSize),
+      totalPage: Math.ceil(count / pageSize),
       totalItem: count,
       data: coins,
     };
