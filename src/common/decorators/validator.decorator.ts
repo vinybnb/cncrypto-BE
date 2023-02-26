@@ -24,7 +24,7 @@ export function IsFile(
       validator: {
         validate(value: any, args: ValidationArguments) {
           if (options?.mimeType) {
-            for (let mimeType of options.mimeType) {
+            for (const mimeType of options.mimeType) {
               const re = new RegExp(`^${mimeType?.replace('*', '.*')}$`, 'g');
               console.log(`^${mimeType?.replace('*', '.*')}$`, value);
               console.log(re.test(value?.mimeType));
@@ -42,7 +42,7 @@ export function IsFile(
 
 export function IsNullable(validationOptions?: ValidationOptions) {
   return ValidateIf(
-    (_object, value) => value !== undefined,
+    (_object, value) => ![undefined, null].includes(value),
     validationOptions,
   );
 }

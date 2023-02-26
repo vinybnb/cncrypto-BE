@@ -1,6 +1,6 @@
 export enum STATUS {
-  APPROVING = 'APPROVING',
-  APPROVED = 'APPROVED',
+  APPROVING = 'approving',
+  APPROVED = 'approved',
 }
 
 export enum CHAIN {

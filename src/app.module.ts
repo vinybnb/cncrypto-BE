@@ -20,23 +20,17 @@ import { join } from 'path';
 @Module({
   imports: [
     MongooseModule.forRoot(MONGO_URI, { useUnifiedTopology: true }),
-    // TypeOrmModule.forRoot({
-    //   type: 'postgres',
-    //   host: 'localhost',
-    //   port: 5432,
-    //   username: 'postgres',
-    //   password: 'postgres',
-    //   database: 'china-crypto',
-    //   entities: [Coin, User, PromotedList],
-    //   synchronize: true,
-    // }),
+    TypeOrmModule.forRoot({
+      type: 'mongodb',
+      url: MONGO_URI,
+    }),
     ThrottlerModule.forRoot({
       ttl: 60,
       limit: 10,
     }),
-    ServeStaticModule.forRoot({
-      rootPath: join(__dirname, 'public'),
-    }),
+    // ServeStaticModule.forRoot({
+    //   rootPath: join(__dirname, 'public'),
+    // }),
     CoinsModule,
     UsersModule,
     AuthModule,

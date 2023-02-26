@@ -9,7 +9,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { lastValueFrom, map } from 'rxjs';
 import { Repository, ILike } from 'typeorm';
 import { STATUS } from './coin.enum';
-import { Coin, CoinDocument } from './coin.shema';
+import { Coin as CoinModel, CoinDocument } from './coin.shema';
 import {
   PromotedList,
   PromotedListDocument,
@@ -19,15 +19,20 @@ import { Chain } from '@modules/chains/coin.shema';
 import { CreateCoinDto } from './dtos/create-coin.dto';
 import { toSlug } from '@common/helpers/string.helper';
 import { FilterCoinDto } from './dtos/filter-coin.dto';
+import { getMongoManager, MongoEntityManager, MongoRepository } from 'typeorm';
+import { plainToClass, classToPlain } from 'class-transformer';
 
 @Injectable()
 export class CoinsService {
+  private manager: MongoEntityManager;
   constructor(
-    @InjectModel(Coin.name) private coinModel: Model<CoinDocument>,
+    @InjectModel(CoinModel.name) private coinModel: Model<CoinDocument>,
     @InjectModel(PromotedList.name)
     private promotedModel: Model<PromotedListDocument>,
     private readonly httpService: HttpService,
-  ) {}
+  ) {
+    this.manager = getMongoManager();
+  }
 
   async findAll(filter: FilterCoinDto) {
     const {
@@ -128,21 +133,18 @@ export class CoinsService {
     ]);
     const coin = coins?.[0] ? coins[0] : null;
     // const coin = await this.coinModel.findOne({ slug });
+
     return { data: coin };
   }
 
   async create(body: CreateCoinDto) {
+    // const maxIdCoin = await this.coinRepo
+    const maxIdCoin = await this.coinModel.findOne({}).sort({ id: -1 });
+
+    console.log(maxIdCoin);
+
+    body.id = (+maxIdCoin?.id || 0) + 1;
     const slug = toSlug(body?.name);
-
-    const http = this.httpService.get(
-      'https://api.dexscreener.com/latest/dex/tokens/' + body.contractAddress,
-    );
-
-    const res = await lastValueFrom(http);
-
-    const tokenInfo = res.data?.pairs?.find(
-      (item) => item?.baseToken?.address === body.contractAddress,
-    );
 
     let countBySLug = await this.coinModel.count({ slug: slug });
 
@@ -161,12 +163,8 @@ export class CoinsService {
       body.slug = slug;
     }
 
-    const coin = new this.coinModel(body);
+    const coin = await this.coinModel.create(body);
 
-    if (tokenInfo) {
-      console.log(tokenInfo);
-    }
-    await coin.save();
     return { data: coin };
   }
 

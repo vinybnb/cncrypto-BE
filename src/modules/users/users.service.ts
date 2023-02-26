@@ -28,7 +28,10 @@ export class UsersService {
 
     const storePassword = salt + '.' + hash.toString('hex');
 
-    const user = await this.userModel.create({ email, password: storePassword });
+    const user = await this.userModel.create({
+      email,
+      password: storePassword,
+    });
 
     return user;
   }

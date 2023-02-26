@@ -6,7 +6,7 @@ import { CoinsService } from './coins.service';
 import { CoinsController } from './coins.controller';
 import { CustomThrottlerGuard } from './custom-throttler.guard';
 import { HttpModule } from '@nestjs/axios';
-import { Coin, CoinSchema } from './coin.shema';
+import { Coin as CoinModel, CoinSchema } from './coin.shema';
 import {
   PromotedList,
   PromotedListSchema,
@@ -15,7 +15,7 @@ import {
 @Module({
   imports: [
     MongooseModule.forFeature([
-      { name: Coin.name, schema: CoinSchema },
+      { name: CoinModel.name, schema: CoinSchema },
       { name: PromotedList.name, schema: PromotedListSchema },
     ]),
     HttpModule,

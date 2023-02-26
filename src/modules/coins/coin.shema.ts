@@ -5,6 +5,9 @@ import { STATUS } from './coin.enum';
 
 @Schema({ timestamps: true })
 export class Coin {
+  @Prop({ type: Number })
+  id: number;
+
   @Prop()
   name: string;
 
@@ -17,11 +20,21 @@ export class Coin {
   @Prop()
   logo: string;
 
-  @Prop({ default: null })
-  chainId: number;
-
-  // @Prop({ virtual: {ref: 'chain'} })
-  // chain: number;
+  @Prop({
+    type: [
+      {
+        chainId: Number,
+        contractAddress: String,
+        pairAddress: String,
+      },
+    ],
+    default: [],
+  })
+  chains: {
+    chainId: number;
+    contractAddress: string;
+    pairAddress: string;
+  }[];
 
   @Prop({ default: null })
   contractAddress: string;
@@ -36,7 +49,10 @@ export class Coin {
   whitelistLink: string;
 
   @Prop({ default: null })
-  launchDate: Date;
+  whitelistAt: Date;
+
+  @Prop({ default: null })
+  launchAt: Date;
 
   @Prop({ default: null })
   preSaleLink: string;
@@ -45,7 +61,7 @@ export class Coin {
   preSalePlatform: string;
 
   @Prop({ default: null })
-  preSaleTime: Date;
+  preSaleAt: Date;
 
   @Prop({ default: null })
   approvedAt: Date;
@@ -77,36 +93,26 @@ export class Coin {
   @Prop({ default: 0 })
   tnx24: number;
 
-  @Prop({ default: '' })
-  linkWebsite: string;
-
-  @Prop({ default: '' })
-  linkTelegram: string;
-
-  @Prop({ default: '' })
-  linkTwitter: string;
-
-  @Prop({ default: '' })
-  linkDiscord: string;
-
-  @Prop({ default: '' })
-  linkMedium: string;
+  @Prop({
+    type: [
+      {
+        name: String,
+        link: String,
+        socialCount: Number,
+      },
+    ],
+    default: [],
+  })
+  links: {
+    name: string;
+    link: string;
+    socialCount: string;
+  }[];
 }
 
 export type CoinDocument = HydratedDocument<Coin>;
 
 export const CoinSchema = SchemaFactory.createForClass(Coin);
-
-// CoinSchema.virtual('chain', {
-//   ref: 'chains',
-//   localField: 'chainId',
-//   foreignField: 'scanValue',
-//   justOne: true,
-// });
-
-// CoinSchema.virtual('chain124').get((coin) => {
-//   return 123;
-// });
 
 CoinSchema.set('toObject', { virtuals: true });
 CoinSchema.set('toJSON', { virtuals: true });

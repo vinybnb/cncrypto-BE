@@ -11,5 +11,4 @@ export class UsersController {
   getUser() {
     return 'hello';
   }
-  
 }

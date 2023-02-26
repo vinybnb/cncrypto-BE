@@ -4,9 +4,7 @@ import { ApiService } from './api.service';
 import { HttpModule } from '@nestjs/axios';
 
 @Module({
-  imports: [
-    HttpModule,
-  ],
+  imports: [HttpModule],
   controllers: [ApiController],
   providers: [ApiService],
 })

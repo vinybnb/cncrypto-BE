@@ -49,10 +49,10 @@ export class FilterCoinDto {
   // @IsNumberString()
   @IsNullable()
   @ApiProperty({ required: false, type: 'number' })
-  page: number = 1;
+  page = 1;
 
   // @IsNumberString()
   @IsNullable()
   @ApiProperty({ required: false })
-  pageSize: number = 10;
+  pageSize = 10;
 }

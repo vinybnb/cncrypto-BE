@@ -7,86 +7,135 @@ import {
   IsNumber,
   IsNumberString,
   ValidateIf,
+  IsUrl,
+  IsDateString,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsFile } from '@common/decorators/validator.decorator';
-import { CHAIN } from '../coin.enum';
+import { IsFile, IsNullable } from '@common/decorators/validator.decorator';
+import { CHAIN, STATUS } from '../coin.enum';
+import { Transform } from 'class-transformer';
 
-export class CreateCoinDto {
-  @IsString()
-  @Length(1, 100)
-  @ApiProperty({ required: true })
-  name: string;
-
-  @IsString()
-  @Length(1, 100)
-  @ApiProperty({ required: true })
-  symbol: string;
-
-  // @IsString()
-  // @Length(1, 256)
-  // @IsFile({ mimeType: ['image/jpeg', 'image/jpg', 'image/png'] })
-  @ApiProperty({ required: true })
-  logo: string;
-
-  @ApiProperty({ required: false })
-  slug: string;
-
-  @IsString()
-  @IsNotEmpty()
-  @ApiProperty({ required: true })
-  description: string;
-
+class CreateCoinChainDto {
   @IsNumber()
-  @IsNotEmpty()
-  @ValidateIf((object, value) => Number.isNaN(+value))
-  @ApiProperty({ required: true, type: 'number' })
   chainId: number;
 
   @IsString()
-  @IsNotEmpty()
-  @ApiProperty({ required: true })
   contractAddress: string;
 
-  @ApiProperty({ required: false })
-  whitelistLink: string;
+  pairAddress: string = '';
+}
 
-  @ApiProperty({ required: false })
-  launchDate: string;
+class CreateCoinLinkDto {
+  @IsString()
+  name: string;
 
-  @ApiProperty({ required: false })
-  launchTime: string;
+  @IsString()
+  link: string;
 
-  @ApiProperty({ required: false })
-  preSaleLink: string;
+  @IsNumber()
+  @Transform(({ value }) => +value || 0)
+  socialCount: number;
+}
 
-  @ApiProperty({ required: false })
-  preSalePlatform: string;
+export class CreateCoinDto {
+  id: number;
 
-  @ApiProperty({ required: false })
-  preSaleTime: string;
+  @IsString()
+  name: string;
 
-  @ApiProperty({ required: false })
-  approvedAt: string;
+  @IsString()
+  symbol: string;
 
-  @ApiProperty({ required: false })
-  totalVotes: string;
+  slug: string;
 
-  @ApiProperty({ required: false })
-  status: string;
+  @IsUrl()
+  logo: string = null;
 
-  @ApiProperty({ required: false })
-  linkWebsite: string;
+  @IsArray()
+  @IsNullable()
+  chains: CreateCoinChainDto[] = [];
 
-  @ApiProperty({ required: false })
-  linkTelegram: string;
+  @IsString()
+  @IsNullable()
+  description: string = null;
 
-  @ApiProperty({ required: false })
-  linkTwitter: string;
+  @IsEnum(STATUS)
+  @IsNullable()
+  status: STATUS = STATUS.APPROVING;
 
-  @ApiProperty({ required: false })
-  linkDiscord: string;
+  @IsString()
+  @IsNullable()
+  whitelistLink: string = null;
 
-  @ApiProperty({ required: false })
-  linkMedium: string;
+  @IsDateString()
+  @IsNullable()
+  whitelistAt: Date = null;
+
+  @IsDateString()
+  @IsNullable()
+  launchAt: Date = null;
+
+  @IsString()
+  @IsNullable()
+  preSaleLink: string = null;
+
+  @IsString()
+  @IsNullable()
+  preSalePlatform: string = null;
+
+  @IsDateString()
+  @IsNullable()
+  preSaleAt: Date = null;
+
+  @IsDateString()
+  @IsNullable()
+  approvedAt: Date = null;
+
+  @IsNumber()
+  @IsNullable()
+  @Transform(({ value }) => +value || 0)
+  totalVotes: number = 0;
+
+  @IsNumber()
+  @IsNullable()
+  @Transform(({ value }) => +value || 0)
+  price: number = 0;
+
+  @IsNumber()
+  @IsNullable()
+  @Transform(({ value }) => +value || 0)
+  marketCap: number = 0;
+
+  @IsNumber()
+  @IsNullable()
+  @Transform(({ value }) => +value || 0)
+  liquidity: number = 0;
+
+  @IsNumber()
+  @Transform(({ value }) => +value || 0)
+  h1: number = 0;
+
+  @IsNumber()
+  @IsNullable()
+  @Transform(({ value }) => +value || 0)
+  h6: number = 0;
+
+  @IsNumber()
+  @IsNullable()
+  @Transform(({ value }) => +value || 0)
+  h24: number = 0;
+
+  @IsNumber()
+  @IsNullable()
+  @Transform(({ value }) => +value || 0)
+  tnxH6: number = 0;
+
+  @IsNumber()
+  @IsNullable()
+  @Transform(({ value }) => +value || 0)
+  tnxH24: number = 0;
+
+  @IsArray()
+  @IsNullable()
+  links: CreateCoinLinkDto[];
 }

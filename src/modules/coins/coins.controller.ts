@@ -7,6 +7,8 @@ import {
   Param,
   UseGuards,
   Delete,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { Patch, Query, UploadedFile, UseInterceptors } from '@nestjs/common';
 import {
@@ -51,6 +53,7 @@ export class CoinsController {
   }
 
   @Post('/create')
+  @UsePipes(new ValidationPipe({ transform: true }))
   @ApiConsumes('application/x-www-form-urlencoded')
   createNewCoin(@Body() body: CreateCoinDto) {
     return this.coinService.create(body);
