@@ -47,7 +47,7 @@ export class CoinsController {
 
   @UseGuards(CustomThrottlerGuard)
   @ApiConsumes('application/x-www-form-urlencoded')
-  @Throttle(1, 180)
+  @Throttle(10, 60)
   @Post('/vote')
   upVote(@Body() body: CoinSlugDto) {
     return this.coinService.upVote(body.slug);

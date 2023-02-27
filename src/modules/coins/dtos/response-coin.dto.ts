@@ -76,27 +76,75 @@ export class ResponseCoinDto {
   @Expose()
   marketCapShorten = '';
 
-  liquidity = 0;
+  liquidityUsd = 0;
 
   @Transform(({ obj }) =>
-    Intl.NumberFormat(undefined).format(+obj?.liquidity || 0),
+    Intl.NumberFormat(undefined).format(+obj?.liquidityUsd || 0),
   )
   @Expose()
-  liquidityReadable = '';
+  liquidityUsdReadable = '';
 
-  @Transform(({ obj }) => toShorten(+obj?.liquidity || 0))
+  @Transform(({ obj }) => toShorten(+obj?.liquidityUsd || 0))
   @Expose()
-  liquidityShorten = '';
+  liquidityUsdShorten = '';
 
-  h1 = 0;
+  volume1h = 0;
 
-  h6 = 0;
+  @Transform(({ obj }) =>
+    Intl.NumberFormat(undefined).format(+obj?.volume1h || 0),
+  )
+  @Expose()
+  volume1hReadable = 0;
 
-  h24 = 0;
+  @Transform(({ obj }) => toShorten(+obj?.volume1h || 0))
+  @Expose()
+  volume1hShorten = 0;
 
-  tnxH6 = 0;
+  volume6h = 0;
 
-  tnxH24 = 0;
+  @Transform(({ obj }) =>
+    Intl.NumberFormat(undefined).format(+obj?.volume6h || 0),
+  )
+  @Expose()
+  volume6hReadable = 0;
+
+  @Transform(({ obj }) => toShorten(+obj?.volume6h || 0))
+  @Expose()
+  volume6hShorten = 0;
+
+  volume24h = 0;
+
+  @Transform(({ obj }) =>
+    Intl.NumberFormat(undefined).format(+obj?.volume24h || 0),
+  )
+  @Expose()
+  volume24hReadable = 0;
+
+  @Transform(({ obj }) => toShorten(+obj?.volume24h || 0))
+  @Expose()
+  volume24hShorten = 0;
+
+  tnx6h = 0;
+
+  @Transform(({ obj }) => Intl.NumberFormat(undefined).format(+obj?.tnx6h || 0))
+  @Expose()
+  tnx6hReadable = 0;
+
+  @Transform(({ obj }) => toShorten(+obj?.tnx6h || 0))
+  @Expose()
+  tnx6hShorten = 0;
+
+  tnx24h = 0;
+
+  @Transform(({ obj }) =>
+    Intl.NumberFormat(undefined).format(+obj?.tnx24h || 0),
+  )
+  @Expose()
+  tnx24hReadable = 0;
+
+  @Transform(({ obj }) => toShorten(+obj?.tnx24h || 0))
+  @Expose()
+  tnx24hShorten = 0;
 
   links: any[];
 }

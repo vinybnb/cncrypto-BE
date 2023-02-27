@@ -3,5 +3,5 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class CustomThrottlerGuard extends ThrottlerGuard {
-  protected errorMessage = 'Try again in 3 minutes';
+  protected errorMessage = 'Try again in 1 minutes';
 }

@@ -81,22 +81,22 @@ export class Coin {
   marketCap: number;
 
   @Prop({ default: 0 })
-  liquidity: number;
+  liquidityUsd: number;
 
   @Prop({ default: 0 })
-  h1: number;
+  volume1h: number;
 
   @Prop({ default: 0 })
-  h6: number;
+  volume6h: number;
 
   @Prop({ default: 0 })
-  h24: number;
+  volume24h: number;
 
   @Prop({ default: 0 })
-  tnx6: number;
+  tnx6h: number;
 
   @Prop({ default: 0 })
-  tnx24: number;
+  tnx24h: number;
 
   @Prop({
     type: [

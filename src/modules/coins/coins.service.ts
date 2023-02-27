@@ -1,15 +1,16 @@
 import { toSlug } from '@common/helpers/string.helper';
+import { Chain, ChainDocument } from '@modules/chains/coin.shema';
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { plainToInstance } from 'class-transformer';
+import { plainToClass, plainToInstance } from 'class-transformer';
 import { Model, PipelineStage } from 'mongoose';
 import {
   PromotedList,
   PromotedListDocument,
 } from '../promoted-list/promoted-list.shema';
 import { STATUS } from './coin.enum';
-import { Coin as CoinModel, CoinDocument } from './coin.shema';
+import { Coin, CoinDocument } from './coin.shema';
 import { CreateCoinDto } from './dtos/create-coin.dto';
 import { FilterCoinDto } from './dtos/filter-coin.dto';
 import { ResponseCoinDto } from './dtos/response-coin.dto';
@@ -17,7 +18,8 @@ import { ResponseCoinDto } from './dtos/response-coin.dto';
 @Injectable()
 export class CoinsService {
   constructor(
-    @InjectModel(CoinModel.name) private coinModel: Model<CoinDocument>,
+    @InjectModel(Coin.name) private coinModel: Model<CoinDocument>,
+    @InjectModel(Chain.name) private chainModel: Model<ChainDocument>,
     @InjectModel(PromotedList.name)
     private promotedModel: Model<PromotedListDocument>,
     private readonly httpService: HttpService,
@@ -50,7 +52,9 @@ export class CoinsService {
     }
 
     if (chainId) {
-      pipeline.push({ $match: { chainId: +chainId } });
+      pipeline.push({
+        $match: { chains: { $elemMatch: { chainId: +chainId } } },
+      });
     }
 
     if (approved === 'false') {
@@ -86,44 +90,62 @@ export class CoinsService {
     });
     pipeline.push({ $skip: (page - 1) * pageSize });
     pipeline.push({ $limit: +pageSize });
-    // pipeline.push({
-    //   $lookup: {
-    //     from: 'chains',
-    //     localField: 'chainId',
-    //     foreignField: 'scanValue',
-    //     as: 'chain',
-    //   },
-    // });
-    // pipeline.push({ $addFields: { chain: { $arrayElemAt: ['$chain', 0] } } });
 
     const coins = await this.coinModel.aggregate(pipeline);
 
+    // add chain info to coins result
+    const chains = await this.chainModel.find();
+    const objChains = chains.reduce((acc, cur) => {
+      {
+        if (!acc?.[cur?.scanValue]) {
+          acc[cur?.scanValue] = cur;
+        }
+        return acc;
+      }
+    }, {});
+    const resultCoins = coins.map((item) => ({
+      ...item,
+      chains: item?.chains.map((chain) => ({
+        ...chain,
+        chain: objChains[chain.chainId],
+      })),
+    }));
+
     return {
-      currentPage: page,
+      currentPage: +page,
       totalPage: Math.ceil(count / pageSize),
       totalItem: count,
-      data: coins.map((item) => plainToInstance(ResponseCoinDto, item)),
+      data: resultCoins.map((item) => plainToInstance(ResponseCoinDto, item)),
     };
   }
 
   async getCoinBySlug(slug) {
     const coins = await this.coinModel.aggregate([
       { $match: { slug } },
-      {
-        $lookup: {
-          from: 'chains',
-          localField: 'chainId',
-          foreignField: 'scanValue',
-          as: 'chain',
-        },
-      },
-      { $addFields: { chain: { $arrayElemAt: ['$chain', 0] } } },
       { $limit: 1 },
     ]);
     const coin = coins?.[0] ? coins[0] : null;
-    // const coin = await this.coinModel.findOne({ slug });
 
-    return { data: coin };
+    // add chain info to coin result
+    const chains = await this.chainModel.find();
+    const objChains = chains.reduce((acc, cur) => {
+      {
+        if (!acc?.[cur?.scanValue]) {
+          acc[cur?.scanValue] = cur;
+        }
+        return acc;
+      }
+    }, {});
+
+    const resultCoin = {
+      ...coin,
+      chains: coin.chains?.map((chain) => ({
+        ...chain,
+        chain: objChains[chain.chainId],
+      })),
+    };
+
+    return { data: plainToClass(ResponseCoinDto, resultCoin) };
   }
 
   async create(body: CreateCoinDto) {
