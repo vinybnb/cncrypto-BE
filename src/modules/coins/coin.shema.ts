@@ -63,6 +63,12 @@ export class Coin {
   @Prop({ default: null })
   preSaleAt: Date;
 
+  // this will create a virtual property called 'fullName'
+  @Prop({ virtual: true, type: String })
+  get preSalePeriod() {
+    return `${this.preSaleAt}`;
+  }
+
   @Prop({ default: null })
   approvedAt: Date;
 

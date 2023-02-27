@@ -20,7 +20,13 @@ import { CreateCoinDto } from './dtos/create-coin.dto';
 import { toSlug } from '@common/helpers/string.helper';
 import { FilterCoinDto } from './dtos/filter-coin.dto';
 import { getMongoManager, MongoEntityManager, MongoRepository } from 'typeorm';
-import { plainToClass, classToPlain } from 'class-transformer';
+import {
+  plainToClass,
+  classToPlain,
+  plainToClassFromExist,
+  plainToInstance,
+} from 'class-transformer';
+import { ResponseCoinDto } from './dtos/response-coin.dto';
 
 @Injectable()
 export class CoinsService {
@@ -97,15 +103,15 @@ export class CoinsService {
     });
     pipeline.push({ $skip: (page - 1) * pageSize });
     pipeline.push({ $limit: +pageSize });
-    pipeline.push({
-      $lookup: {
-        from: 'chains',
-        localField: 'chainId',
-        foreignField: 'scanValue',
-        as: 'chain',
-      },
-    });
-    pipeline.push({ $addFields: { chain: { $arrayElemAt: ['$chain', 0] } } });
+    // pipeline.push({
+    //   $lookup: {
+    //     from: 'chains',
+    //     localField: 'chainId',
+    //     foreignField: 'scanValue',
+    //     as: 'chain',
+    //   },
+    // });
+    // pipeline.push({ $addFields: { chain: { $arrayElemAt: ['$chain', 0] } } });
 
     const coins = await this.coinModel.aggregate(pipeline);
 
@@ -113,7 +119,7 @@ export class CoinsService {
       currentPage: page,
       totalPage: Math.ceil(count / pageSize),
       totalItem: count,
-      data: coins,
+      data: coins.map((item) => plainToInstance(ResponseCoinDto, item)),
     };
   }
 
