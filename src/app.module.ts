@@ -20,10 +20,10 @@ import { join } from 'path';
 @Module({
   imports: [
     MongooseModule.forRoot(MONGO_URI, { useUnifiedTopology: true }),
-    TypeOrmModule.forRoot({
-      type: 'mongodb',
-      url: MONGO_URI,
-    }),
+    // TypeOrmModule.forRoot({
+    //   type: 'mongodb',
+    //   url: MONGO_URI,
+    // }),
     ThrottlerModule.forRoot({
       ttl: 60,
       limit: 10,

@@ -1,13 +1,12 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { MongooseModule } from '@nestjs/mongoose';
 
-import { PromotedService } from './promoted-list.service';
-import { PromotedController } from './promoted-list.controller';
-import { CustomThrottlerGuard } from './custom-throttler.guard';
-import { HttpModule } from '@nestjs/axios';
-import { PromotedList, PromotedListSchema } from './promoted-list.shema';
 import { Coin, CoinSchema } from '@/modules/coins/coin.shema';
+import { HttpModule } from '@nestjs/axios';
+import { CustomThrottlerGuard } from './custom-throttler.guard';
+import { PromotedController } from './promoted-list.controller';
+import { PromotedService } from './promoted-list.service';
+import { PromotedList, PromotedListSchema } from './promoted-list.shema';
 
 @Module({
   imports: [

@@ -1,16 +1,15 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { MongooseModule } from '@nestjs/mongoose';
 
-import { CoinsService } from './coins.service';
-import { CoinsController } from './coins.controller';
-import { CustomThrottlerGuard } from './custom-throttler.guard';
 import { HttpModule } from '@nestjs/axios';
-import { Coin as CoinModel, CoinSchema } from './coin.shema';
 import {
   PromotedList,
-  PromotedListSchema,
+  PromotedListSchema
 } from '../promoted-list/promoted-list.shema';
+import { Coin as CoinModel, CoinSchema } from './coin.shema';
+import { CoinsController } from './coins.controller';
+import { CoinsService } from './coins.service';
+import { CustomThrottlerGuard } from './custom-throttler.guard';
 
 @Module({
   imports: [

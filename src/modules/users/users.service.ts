@@ -1,12 +1,9 @@
 import { ConflictException, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { User } from './users.shema';
-import { randomBytes, scrypt as _scrypt } from 'crypto';
-import { promisify } from 'util';
 import { InjectModel } from '@nestjs/mongoose';
+import { scrypt as _scrypt } from 'crypto';
 import { Model } from 'mongoose';
-import { UserDocument } from './users.shema';
+import { promisify } from 'util';
+import { User, UserDocument } from './users.shema';
 
 const scrypt = promisify(_scrypt);
 

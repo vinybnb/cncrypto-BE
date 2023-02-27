@@ -1,44 +1,29 @@
+import { toSlug } from '@common/helpers/string.helper';
 import { HttpService } from '@nestjs/axios';
 import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
+  Injectable
 } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { InjectModel } from '@nestjs/mongoose';
-import { lastValueFrom, map } from 'rxjs';
-import { Repository, ILike } from 'typeorm';
-import { STATUS } from './coin.enum';
-import { Coin as CoinModel, CoinDocument } from './coin.shema';
+import { plainToInstance } from 'class-transformer';
+import { Model, PipelineStage } from 'mongoose';
 import {
   PromotedList,
-  PromotedListDocument,
+  PromotedListDocument
 } from '../promoted-list/promoted-list.shema';
-import mongoose, { FilterQuery, Model, PipelineStage } from 'mongoose';
-import { Chain } from '@modules/chains/coin.shema';
+import { STATUS } from './coin.enum';
+import { Coin as CoinModel, CoinDocument } from './coin.shema';
 import { CreateCoinDto } from './dtos/create-coin.dto';
-import { toSlug } from '@common/helpers/string.helper';
 import { FilterCoinDto } from './dtos/filter-coin.dto';
-import { getMongoManager, MongoEntityManager, MongoRepository } from 'typeorm';
-import {
-  plainToClass,
-  classToPlain,
-  plainToClassFromExist,
-  plainToInstance,
-} from 'class-transformer';
 import { ResponseCoinDto } from './dtos/response-coin.dto';
 
 @Injectable()
 export class CoinsService {
-  private manager: MongoEntityManager;
   constructor(
     @InjectModel(CoinModel.name) private coinModel: Model<CoinDocument>,
     @InjectModel(PromotedList.name)
     private promotedModel: Model<PromotedListDocument>,
     private readonly httpService: HttpService,
-  ) {
-    this.manager = getMongoManager();
-  }
+  ) {}
 
   async findAll(filter: FilterCoinDto) {
     const {

@@ -1,16 +1,12 @@
-import { HttpService } from '@nestjs/axios';
 import {
   BadRequestException,
   Injectable,
-  NotFoundException,
+  NotFoundException
 } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
 import { InjectModel } from '@nestjs/mongoose';
-import { lastValueFrom, map } from 'rxjs';
-import { Repository, ILike } from 'typeorm';
+import { Model } from 'mongoose';
 import { Coin, CoinDocument } from '../coins/coin.shema';
 import { PromotedList, PromotedListDocument } from './promoted-list.shema';
-import mongoose, { Model } from 'mongoose';
 
 @Injectable()
 export class PromotedService {
