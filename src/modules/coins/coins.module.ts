@@ -4,7 +4,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { HttpModule } from '@nestjs/axios';
 import {
   PromotedList,
-  PromotedListSchema
+  PromotedListSchema,
 } from '../promoted-list/promoted-list.shema';
 import { Coin as CoinModel, CoinSchema } from './coin.shema';
 import { CoinsController } from './coins.controller';

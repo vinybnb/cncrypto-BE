@@ -1,19 +1,5 @@
-import {
-  IsEnum,
-  IsString,
-  Length,
-  IsNotEmpty,
-  IsArray,
-  IsNumber,
-  IsNumberString,
-  ValidateIf,
-  IsUrl,
-  IsDateString,
-} from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
-import { IsFile, IsNullable } from '@common/decorators/validator.decorator';
-import { CHAIN, STATUS } from '../coin.enum';
-import { Transform, Exclude, Expose } from 'class-transformer';
+import { STATUS } from '../coin.enum';
+import { Transform, Expose } from 'class-transformer';
 import moment from 'moment';
 import { toPlainString, toShorten } from '@common/helpers/number.helper';
 
@@ -72,45 +58,45 @@ export class ResponseCoinDto {
   @Expose()
   approvedPeriod: string = null;
 
-  totalVotes: number = 0;
+  totalVotes = 0;
 
-  price: number = 0;
+  price = 0;
 
   @Transform(({ obj }) => toPlainString(+obj?.price))
   @Expose()
-  pricePlain: string = '';
+  pricePlain = '';
 
-  marketCap: number = 0;
+  marketCap = 0;
 
   @Transform(({ obj }) => Intl.NumberFormat(undefined).format(+obj?.marketCap))
   @Expose()
-  marketCapReadable: string = '';
+  marketCapReadable = '';
 
   @Transform(({ obj }) => toShorten(+obj?.marketCap))
   @Expose()
-  marketCapShorten: string = '';
+  marketCapShorten = '';
 
-  liquidity: number = 0;
+  liquidity = 0;
 
   @Transform(({ obj }) =>
     Intl.NumberFormat(undefined).format(+obj?.liquidity || 0),
   )
   @Expose()
-  liquidityReadable: string = '';
+  liquidityReadable = '';
 
   @Transform(({ obj }) => toShorten(+obj?.liquidity || 0))
   @Expose()
-  liquidityShorten: string = '';
+  liquidityShorten = '';
 
-  h1: number = 0;
+  h1 = 0;
 
-  h6: number = 0;
+  h6 = 0;
 
-  h24: number = 0;
+  h24 = 0;
 
-  tnxH6: number = 0;
+  tnxH6 = 0;
 
-  tnxH24: number = 0;
+  tnxH24 = 0;
 
   links: any[];
 }

@@ -1,9 +1,7 @@
 import { Controller, Get } from '@nestjs/common';
-import { Param, Query, Req } from '@nestjs/common/decorators';
 import { Post } from '@nestjs/common/decorators/http/request-mapping.decorator';
 import { Body } from '@nestjs/common/decorators/http/route-params.decorator';
 import { ApiConsumes, ApiTags } from '@nestjs/swagger';
-import { Request } from 'express';
 import { ChainService } from './chains.service';
 import { ChainDto } from './dto/chain.dto';
 

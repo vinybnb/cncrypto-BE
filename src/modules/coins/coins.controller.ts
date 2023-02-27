@@ -3,25 +3,13 @@ import {
   Post,
   Body,
   Get,
-  Req,
-  Param,
   UseGuards,
-  Delete,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
-import { Patch, Query, UploadedFile, UseInterceptors } from '@nestjs/common';
-import {
-  ApiBearerAuth,
-  ApiBody,
-  ApiConsumes,
-  ApiOkResponse,
-  ApiProduces,
-  ApiTags,
-} from '@nestjs/swagger';
+import { Query } from '@nestjs/common';
+import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
-import { Request } from 'express';
-import { firstValueFrom } from 'rxjs';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { ROLE } from 'src/common/enums/role.enum';
@@ -30,8 +18,6 @@ import { CoinsService } from './coins.service';
 import { CustomThrottlerGuard } from './custom-throttler.guard';
 import { CreateCoinDto } from './dtos/create-coin.dto';
 import { CoinSlugDto } from './dtos/coin-slug.dto';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { logoStorage } from '@common/helpers/storage.helper';
 import { FilterCoinDto } from './dtos/filter-coin.dto';
 
 @ApiTags('Coins')

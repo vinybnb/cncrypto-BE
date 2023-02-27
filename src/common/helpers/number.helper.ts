@@ -1,4 +1,4 @@
-export function toPlainString(num: number = 0) {
+export function toPlainString(num = 0) {
   return ('' + +num).replace(
     /(-?)(\d*)\.?(\d*)e([+-]\d+)/,
     function (a, b, c, d, e) {
@@ -9,7 +9,7 @@ export function toPlainString(num: number = 0) {
   );
 }
 
-export function toShorten(num: number, fixed: number = 2) {
+export function toShorten(num: number, fixed = 2) {
   const units = ['', 'K', 'M', 'B', 'T', 'Q'];
   let count = 0;
   while (num >= 1000) {

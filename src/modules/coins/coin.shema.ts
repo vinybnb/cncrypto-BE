@@ -1,6 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import mongoose, { HydratedDocument } from 'mongoose';
-import { Chain } from '@modules/chains/coin.shema';
+import { HydratedDocument } from 'mongoose';
 import { STATUS } from './coin.enum';
 
 @Schema({ timestamps: true })

@@ -1,18 +1,13 @@
 import {
   IsEnum,
   IsString,
-  Length,
-  IsNotEmpty,
   IsArray,
   IsNumber,
-  IsNumberString,
-  ValidateIf,
   IsUrl,
   IsDateString,
 } from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
-import { IsFile, IsNullable } from '@common/decorators/validator.decorator';
-import { CHAIN, STATUS } from '../coin.enum';
+import { IsNullable } from '@common/decorators/validator.decorator';
+import { STATUS } from '../coin.enum';
 import { Transform } from 'class-transformer';
 
 class CreateCoinChainDto {
@@ -22,7 +17,7 @@ class CreateCoinChainDto {
   @IsString()
   contractAddress: string;
 
-  pairAddress: string = '';
+  pairAddress = '';
 }
 
 class CreateCoinLinkDto {
@@ -94,46 +89,46 @@ export class CreateCoinDto {
   @IsNumber()
   @IsNullable()
   @Transform(({ value }) => +value || 0)
-  totalVotes: number = 0;
+  totalVotes = 0;
 
   @IsNumber()
   @IsNullable()
   @Transform(({ value }) => +value || 0)
-  price: number = 0;
+  price = 0;
 
   @IsNumber()
   @IsNullable()
   @Transform(({ value }) => +value || 0)
-  marketCap: number = 0;
+  marketCap = 0;
 
   @IsNumber()
   @IsNullable()
   @Transform(({ value }) => +value || 0)
-  liquidity: number = 0;
+  liquidity = 0;
 
   @IsNumber()
   @Transform(({ value }) => +value || 0)
-  h1: number = 0;
-
-  @IsNumber()
-  @IsNullable()
-  @Transform(({ value }) => +value || 0)
-  h6: number = 0;
+  h1 = 0;
 
   @IsNumber()
   @IsNullable()
   @Transform(({ value }) => +value || 0)
-  h24: number = 0;
+  h6 = 0;
 
   @IsNumber()
   @IsNullable()
   @Transform(({ value }) => +value || 0)
-  tnxH6: number = 0;
+  h24 = 0;
 
   @IsNumber()
   @IsNullable()
   @Transform(({ value }) => +value || 0)
-  tnxH24: number = 0;
+  tnxH6 = 0;
+
+  @IsNumber()
+  @IsNullable()
+  @Transform(({ value }) => +value || 0)
+  tnxH24 = 0;
 
   @IsArray()
   @IsNullable()

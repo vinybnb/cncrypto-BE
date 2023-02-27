@@ -1,7 +1,7 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
-import { randomBytes, scrypt as _scrypt } from 'crypto';
+import { scrypt as _scrypt } from 'crypto';
 import { promisify } from 'util';
 import { UsersService } from '../users/users.service';
 

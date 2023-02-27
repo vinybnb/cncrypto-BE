@@ -1,5 +1,4 @@
-import { IsEnum, IsString, Length, IsNotEmpty, IsArray } from 'class-validator';
-import { CHAIN } from '../coin.enum';
+import { IsString, Length, IsArray } from 'class-validator';
 
 export class CreateNewCoinDto {
   @IsString()

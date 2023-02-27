@@ -1,6 +1,5 @@
 import {
   registerDecorator,
-  ValidationArguments,
   ValidatorOptions,
   ValidateIf,
   ValidationOptions,
@@ -14,7 +13,7 @@ export function IsFile(
   options: IsFileOptions,
   validationOptions?: ValidatorOptions,
 ) {
-  return function (object: Object, propertyName: string) {
+  return function (object: object, propertyName: string) {
     return registerDecorator({
       name: 'isFile',
       target: object.constructor,
@@ -22,7 +21,7 @@ export function IsFile(
       constraints: [],
       options: validationOptions,
       validator: {
-        validate(value: any, args: ValidationArguments) {
+        validate(value: any) {
           if (options?.mimeType) {
             for (const mimeType of options.mimeType) {
               const re = new RegExp(`^${mimeType?.replace('*', '.*')}$`, 'g');

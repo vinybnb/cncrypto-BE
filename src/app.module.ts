@@ -1,7 +1,5 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { ThrottlerModule } from '@nestjs/throttler';
-import { ServeStaticModule } from '@nestjs/serve-static';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -15,7 +13,6 @@ import { ApiModule } from '@modules/api/api.module';
 import { ChainModule } from '@modules/chains/chains.module';
 import { PromotedModule } from '@modules/promoted-list/promoted-list.module';
 import { MongooseModule } from '@nestjs/mongoose';
-import { join } from 'path';
 
 @Module({
   imports: [

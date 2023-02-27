@@ -1,14 +1,12 @@
 import { toSlug } from '@common/helpers/string.helper';
 import { HttpService } from '@nestjs/axios';
-import {
-  Injectable
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { plainToInstance } from 'class-transformer';
 import { Model, PipelineStage } from 'mongoose';
 import {
   PromotedList,
-  PromotedListDocument
+  PromotedListDocument,
 } from '../promoted-list/promoted-list.shema';
 import { STATUS } from './coin.enum';
 import { Coin as CoinModel, CoinDocument } from './coin.shema';
@@ -160,6 +158,7 @@ export class CoinsService {
   }
 
   async updateCoinLogoBySlug(slug: string, file: Express.Multer.File) {
+    console.log(file);
     const coin = await this.coinModel.findOne({ slug });
     return { data: coin };
   }
