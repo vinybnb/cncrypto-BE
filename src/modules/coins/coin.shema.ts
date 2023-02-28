@@ -84,6 +84,15 @@ export class Coin {
   liquidityUsd: number;
 
   @Prop({ default: 0 })
+  change1h: number;
+
+  @Prop({ default: 0 })
+  change6h: number;
+
+  @Prop({ default: 0 })
+  change24h: number;
+
+  @Prop({ default: 0 })
   volume1h: number;
 
   @Prop({ default: 0 })

@@ -88,6 +88,42 @@ export class ResponseCoinDto {
   @Expose()
   liquidityUsdShorten = '';
 
+  change1h = 0;
+
+  @Transform(({ obj }) =>
+    Intl.NumberFormat(undefined).format(+obj?.change1h || 0),
+  )
+  @Expose()
+  change1hReadable = 0;
+
+  @Transform(({ obj }) => toShorten(+obj?.change1h || 0))
+  @Expose()
+  change1hShorten = 0;
+
+  change6h = 0;
+
+  @Transform(({ obj }) =>
+    Intl.NumberFormat(undefined).format(+obj?.change6h || 0),
+  )
+  @Expose()
+  change6hReadable = 0;
+
+  @Transform(({ obj }) => toShorten(+obj?.change6h || 0))
+  @Expose()
+  change6hShorten = 0;
+
+  change24h = 0;
+
+  @Transform(({ obj }) =>
+    Intl.NumberFormat(undefined).format(+obj?.change24h || 0),
+  )
+  @Expose()
+  change24hReadable = 0;
+
+  @Transform(({ obj }) => toShorten(+obj?.change24h || 0))
+  @Expose()
+  change24hShorten = 0;
+
   volume1h = 0;
 
   @Transform(({ obj }) =>
