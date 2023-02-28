@@ -3,9 +3,12 @@ import {
   IsEnum,
   IsNumberString,
   IsBooleanString,
+  IsEmpty,
+  IsNumber,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNullable } from '@common/decorators/validator.decorator';
+import { Transform } from 'class-transformer';
 
 export class FilterCoinDto {
   @IsString()
@@ -13,8 +16,9 @@ export class FilterCoinDto {
   @ApiProperty({ required: false })
   slug: string;
 
-  @IsNumberString()
+  @IsNumber()
   @IsNullable()
+  @Transform(({ value }) => +value || undefined)
   @ApiProperty({ required: false })
   chainId: number;
 
@@ -43,13 +47,15 @@ export class FilterCoinDto {
   @ApiProperty({ required: false })
   sortDirection: string;
 
-  // @IsNumberString()
+  @IsNumber()
   @IsNullable()
+  @Transform(({ value }) => +value || 1)
   @ApiProperty({ required: false, type: 'number' })
   page = 1;
 
-  // @IsNumberString()
+  @IsNumber()
   @IsNullable()
+  @Transform(({ value }) => +value || 10)
   @ApiProperty({ required: false })
   pageSize = 10;
 }
