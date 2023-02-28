@@ -186,12 +186,8 @@ export class CoinsService {
   }
 
   async upVote(slug) {
-    const coin = await this.coinModel.findOne({ slug });
-
-    coin.totalVotes += 1;
-    await coin.save();
-
-    return { data: coin };
+    await this.coinModel.updateOne({ slug }, { $inc: { totalVotes: 1 } });
+    return { result: 'success' };
   }
 
   async approveCoin(slug) {
