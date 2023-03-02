@@ -28,12 +28,14 @@ export class CoinsController {
   constructor(private coinService: CoinsService) {}
 
   @Get('/get-all')
+  @UsePipes(new ValidationPipe({ transform: true }))
   @ApiConsumes('application/x-www-form-urlencoded')
   async getAllCoin(@Query() query: FilterCoinDto) {
     return await this.coinService.findAll(query);
   }
 
   @Get('/detail')
+  @UsePipes(new ValidationPipe({ transform: true }))
   @ApiConsumes('application/x-www-form-urlencoded')
   async getCoinBySlug(@Query() query: CoinSlugDto) {
     return await this.coinService.getCoinBySlug(query.slug);
