@@ -6,6 +6,7 @@ import {
   UseGuards,
   UsePipes,
   ValidationPipe,
+  Delete,
 } from '@nestjs/common';
 import { Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
@@ -45,6 +46,14 @@ export class CoinsController {
     return this.coinService.create(body);
   }
 
+  @Delete('/delete')
+  @ApiConsumes('application/x-www-form-urlencoded')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(ROLE.ADMIN)
+  deleteCoin(@Query() query: CoinSlugDto) {
+    return this.coinService.deleteCoinBySlug(query.slug);
+  }
+
   @UseGuards(CustomThrottlerGuard)
   @ApiConsumes('application/x-www-form-urlencoded')
   @Throttle(10, 60)
@@ -59,5 +68,13 @@ export class CoinsController {
   @Roles(ROLE.ADMIN)
   approveCoin(@Body() body: CoinSlugDto) {
     return this.coinService.approveCoin(body.slug);
+  }
+
+  @Post('/unapproved')
+  @ApiConsumes('application/x-www-form-urlencoded')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(ROLE.ADMIN)
+  unapprovedCoin(@Body() body: CoinSlugDto) {
+    return this.coinService.unApproveCoin(body.slug);
   }
 }

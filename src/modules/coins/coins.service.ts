@@ -51,7 +51,7 @@ export class CoinsService {
       });
     }
 
-    if (chainId) {
+    if (chainId && chainId !== -1) {
       pipeline.push({
         $match: { chains: { $elemMatch: { chainId: +chainId } } },
       });
@@ -185,6 +185,11 @@ export class CoinsService {
     return { data: coin };
   }
 
+  async deleteCoinBySlug(slug: string) {
+    await this.coinModel.deleteOne({ slug: slug });
+    return { result: 'success' };
+  }
+
   async upVote(slug) {
     await this.coinModel.updateOne({ slug }, { $inc: { totalVotes: 1 } });
     return { result: 'success' };
@@ -196,7 +201,16 @@ export class CoinsService {
     coin.status = STATUS.APPROVED;
     coin.approvedAt = new Date();
     await coin.save();
-    // Object.assign(coin, { status: STATUS.APPROVED });
+
+    return { data: coin };
+  }
+
+  async unApproveCoin(slug) {
+    const coin = await this.coinModel.findOne({ slug });
+
+    coin.status = STATUS.APPROVING;
+    coin.approvedAt = null;
+    await coin.save();
 
     return { data: coin };
   }
