@@ -1,5 +1,9 @@
 import { toSlug } from '@common/helpers/string.helper';
 import { Chain, ChainDocument } from '@modules/chains/coin.shema';
+import {
+  PromoteCoin,
+  PromoteCoinDocument,
+} from '@modules/promote-coin/promote-coin.shema';
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
@@ -22,6 +26,8 @@ export class CoinsService {
     @InjectModel(Chain.name) private chainModel: Model<ChainDocument>,
     @InjectModel(PromotedList.name)
     private promotedModel: Model<PromotedListDocument>,
+    @InjectModel(PromoteCoin.name)
+    private promoteCoinModel: Model<PromoteCoinDocument>,
     private readonly httpService: HttpService,
   ) {}
 
@@ -67,10 +73,9 @@ export class CoinsService {
 
     if (promoted === 'true') {
       const now = new Date().toISOString();
-      const promoted = await this.promotedModel.find(
+      const promoted = await this.promoteCoinModel.find(
         {
-          startTime: { $lte: now },
-          expiredTime: { $gte: now },
+          expiredAt: { $gte: now },
         },
         { coin: 1 },
       );
@@ -103,6 +108,7 @@ export class CoinsService {
         return acc;
       }
     }, {});
+    
     const resultCoins = coins.map((item) => ({
       ...item,
       chains: item?.chains.map((chain) => ({
@@ -110,12 +116,12 @@ export class CoinsService {
         chain: objChains[chain.chainId],
       })),
     }));
-
+    
     return {
       currentPage: +page,
       totalPage: Math.ceil(count / pageSize),
       totalItem: count,
-      data: resultCoins.map((item) => plainToInstance(ResponseCoinDto, item)),
+      data: resultCoins.map((item) => plainToClass(ResponseCoinDto, item)),
     };
   }
 

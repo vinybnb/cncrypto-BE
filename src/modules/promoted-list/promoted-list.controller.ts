@@ -20,15 +20,35 @@ import { ApiTags } from '@nestjs/swagger';
 export class PromotedController {
   constructor(private promotedService: PromotedService) {}
 
-  @Get()
+  @Get('/get-all')
   getPromotedCoin() {
     return this.promotedService.getPromotedList();
   }
 
-  @Post('/:url')
+  @Post('/create')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(ROLE.ADMIN)
-  addPromotedListCoin(
+  createPromoteCoin(
+    @Param('url') url: string,
+    @Body() body: AddPromotedToListDto,
+  ) {
+    return this.promotedService.addPromotedListCoin(url, body);
+  }
+
+  @Post('/detail')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(ROLE.ADMIN)
+  getPromotedCoinDetail(
+    @Param('url') url: string,
+    @Body() body: AddPromotedToListDto,
+  ) {
+    return this.promotedService.addPromotedListCoin(url, body);
+  }
+
+  @Post('/update')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(ROLE.ADMIN)
+  updatePromotedCoin(
     @Param('url') url: string,
     @Body() body: AddPromotedToListDto,
   ) {
@@ -38,7 +58,7 @@ export class PromotedController {
   @Delete('/:url')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(ROLE.ADMIN)
-  deleteCoinInPromotedList(@Param('url') url: string) {
+  deletePromotedCoin(@Param('url') url: string) {
     return this.promotedService.deleteCoinInPromotedList(url);
   }
 }

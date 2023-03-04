@@ -6,6 +6,7 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Coin, CoinDocument } from '../coins/coin.shema';
+import { PromoteIdDto } from './dtos/promote-id.dto';
 import { PromotedList, PromotedListDocument } from './promoted-list.shema';
 
 @Injectable()
@@ -18,6 +19,10 @@ export class PromotedService {
 
   async getPromotedList() {
     return this.promotedModel.find().populate('coin');
+  }
+
+  async getPromotedCoinDetail(dto: PromoteIdDto) {
+    return this.promotedModel.findById(dto._id).populate('coin');
   }
 
   async addPromotedListCoin(slug, body) {

@@ -13,14 +13,12 @@ import { ApiModule } from '@modules/api/api.module';
 import { ChainModule } from '@modules/chains/chains.module';
 import { PromotedModule } from '@modules/promoted-list/promoted-list.module';
 import { MongooseModule } from '@nestjs/mongoose';
+import { PromoteBannerModule } from '@modules/promote-banner/promote-banner.module';
+import { PromoteCoinModule } from '@modules/promote-coin/promote-coin.module';
 
 @Module({
   imports: [
     MongooseModule.forRoot(MONGO_URI, { useUnifiedTopology: true }),
-    // TypeOrmModule.forRoot({
-    //   type: 'mongodb',
-    //   url: MONGO_URI,
-    // }),
     ThrottlerModule.forRoot({
       ttl: 60,
       limit: 10,
@@ -34,6 +32,8 @@ import { MongooseModule } from '@nestjs/mongoose';
     ApiModule,
     ChainModule,
     PromotedModule,
+    PromoteBannerModule,
+    PromoteCoinModule,
   ],
   controllers: [AppController],
   providers: [AppService],

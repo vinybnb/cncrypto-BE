@@ -4,6 +4,9 @@ import moment from 'moment';
 import { toPlainString, toShorten } from '@common/helpers/number.helper';
 
 export class ResponseCoinDto {
+  @Transform((value) => value?.obj?._id?.toString())
+  _id: string;
+
   id: number;
 
   name: string;
