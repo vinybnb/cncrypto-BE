@@ -25,4 +25,18 @@ export class ChainService {
 
     return { data: chain };
   }
+
+  async getObjectByChainId(): Promise<{ [key: number]: ChainDocument }> {
+    const chains = await this.chainModel.find();
+    const objChains = chains.reduce((acc, cur) => {
+      {
+        if (!acc?.[cur?.scanValue]) {
+          acc[cur?.scanValue] = cur;
+        }
+        return acc;
+      }
+    }, {});
+
+    return objChains;
+  }
 }

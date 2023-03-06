@@ -15,6 +15,7 @@ import {
   PromoteCoin,
   PromoteCoinSchema,
 } from '@modules/promote-coin/promote-coin.shema';
+import { ChainModule } from '@modules/chains/chains.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import {
       { name: PromoteCoin.name, schema: PromoteCoinSchema },
     ]),
     HttpModule,
+    ChainModule,
   ],
   providers: [CoinsService, CustomThrottlerGuard],
   controllers: [CoinsController],

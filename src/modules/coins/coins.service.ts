@@ -1,5 +1,5 @@
 import { toSlug } from '@common/helpers/string.helper';
-import { Chain, ChainDocument } from '@modules/chains/coin.shema';
+import { ChainService } from '@modules/chains/chains.service';
 import {
   PromoteCoin,
   PromoteCoinDocument,
@@ -7,12 +7,8 @@ import {
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { plainToClass, plainToInstance } from 'class-transformer';
+import { plainToClass } from 'class-transformer';
 import { Model, PipelineStage } from 'mongoose';
-import {
-  PromotedList,
-  PromotedListDocument,
-} from '../promoted-list/promoted-list.shema';
 import { STATUS } from './coin.enum';
 import { Coin, CoinDocument } from './coin.shema';
 import { CreateCoinDto } from './dtos/create-coin.dto';
@@ -23,11 +19,9 @@ import { ResponseCoinDto } from './dtos/response-coin.dto';
 export class CoinsService {
   constructor(
     @InjectModel(Coin.name) private coinModel: Model<CoinDocument>,
-    @InjectModel(Chain.name) private chainModel: Model<ChainDocument>,
-    @InjectModel(PromotedList.name)
-    private promotedModel: Model<PromotedListDocument>,
     @InjectModel(PromoteCoin.name)
     private promoteCoinModel: Model<PromoteCoinDocument>,
+    private chainService: ChainService,
     private readonly httpService: HttpService,
   ) {}
 
@@ -99,16 +93,8 @@ export class CoinsService {
     const coins = await this.coinModel.aggregate(pipeline);
 
     // add chain info to coins result
-    const chains = await this.chainModel.find();
-    const objChains = chains.reduce((acc, cur) => {
-      {
-        if (!acc?.[cur?.scanValue]) {
-          acc[cur?.scanValue] = cur;
-        }
-        return acc;
-      }
-    }, {});
-    
+    const objChains = await this.chainService.getObjectByChainId();
+
     const resultCoins = coins.map((item) => ({
       ...item,
       chains: item?.chains.map((chain) => ({
@@ -116,11 +102,34 @@ export class CoinsService {
         chain: objChains[chain.chainId],
       })),
     }));
-    
+
     return {
       currentPage: +page,
       totalPage: Math.ceil(count / pageSize),
       totalItem: count,
+      data: resultCoins.map((item) => plainToClass(ResponseCoinDto, item)),
+    };
+  }
+
+  async getTrendingCoins() {
+    const trendingCoins = await this.coinModel
+      .find({ approvedAt: { $ne: null } })
+      .sort({
+        change24h: -1,
+        change6h: -1,
+        volume24h: -1,
+      })
+      .limit(6);
+
+    const objChains = await this.chainService.getObjectByChainId();
+    const resultCoins = trendingCoins.map((item) => ({
+      ...item,
+      chains: item?.chains.map((chain) => ({
+        ...chain,
+        chain: objChains[chain.chainId],
+      })),
+    }));
+    return {
       data: resultCoins.map((item) => plainToClass(ResponseCoinDto, item)),
     };
   }
@@ -133,15 +142,7 @@ export class CoinsService {
     const coin = coins?.[0] ? coins[0] : null;
 
     // add chain info to coin result
-    const chains = await this.chainModel.find();
-    const objChains = chains.reduce((acc, cur) => {
-      {
-        if (!acc?.[cur?.scanValue]) {
-          acc[cur?.scanValue] = cur;
-        }
-        return acc;
-      }
-    }, {});
+    const objChains = await this.chainService.getObjectByChainId();
 
     const resultCoin = {
       ...coin,

@@ -12,5 +12,6 @@ import { Chain, ChainSchema } from './coin.shema';
   ],
   controllers: [ChainController],
   providers: [ChainService],
+  exports: [ChainService],
 })
 export class ChainModule {}
