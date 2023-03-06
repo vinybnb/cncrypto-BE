@@ -122,13 +122,15 @@ export class CoinsService {
       .limit(6);
 
     const objChains = await this.chainService.getObjectByChainId();
-    const resultCoins = trendingCoins.map((item) => ({
-      ...item,
-      chains: item?.chains.map((chain) => ({
-        ...chain,
-        chain: objChains[chain.chainId],
-      })),
-    }));
+    const resultCoins = trendingCoins
+      .map((item: any) => item?.toObject())
+      .map((item) => ({
+        ...item,
+        chains: item?.chains.map((chain) => ({
+          ...chain,
+          chain: objChains[chain.chainId],
+        })),
+      }));
     return {
       data: resultCoins.map((item) => plainToClass(ResponseCoinDto, item)),
     };
