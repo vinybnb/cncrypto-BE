@@ -119,7 +119,7 @@ export class CoinsService {
         change6h: -1,
         volume24h: -1,
       })
-      .limit(6);
+      .limit(50);
 
     const objChains = await this.chainService.getObjectByChainId();
     const resultCoins = trendingCoins
