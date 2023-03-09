@@ -20,6 +20,7 @@ import { CustomThrottlerGuard } from './custom-throttler.guard';
 import { CreateCoinDto } from './dtos/create-coin.dto';
 import { CoinSlugDto } from './dtos/coin-slug.dto';
 import { FilterCoinDto } from './dtos/filter-coin.dto';
+import { VoteCoinDto } from './dtos/vote-coin.dto';
 
 @ApiTags('Coins')
 @ApiBearerAuth()
@@ -67,8 +68,8 @@ export class CoinsController {
   @ApiConsumes('application/x-www-form-urlencoded')
   @Throttle(10, 60)
   @Post('/vote')
-  upVote(@Body() body: CoinSlugDto) {
-    return this.coinService.upVote(body.slug);
+  upVote(@Body() body: VoteCoinDto) {
+    return this.coinService.upVote(body);
   }
 
   @Post('/approve')

@@ -1,14 +1,7 @@
-import {
-  IsString,
-  IsEnum,
-  IsNumberString,
-  IsBooleanString,
-  IsEmpty,
-  IsNumber,
-} from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
 import { IsNullable } from '@common/decorators/validator.decorator';
+import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
+import { IsBooleanString, IsEnum, IsNumber, IsString } from 'class-validator';
 
 export class FilterCoinDto {
   @IsString()

@@ -1,4 +1,5 @@
 import { toSlug } from '@common/helpers/string.helper';
+import { RECAPTCHA_SECRET_KEY } from '@configs/app';
 import { ChainService } from '@modules/chains/chains.service';
 import {
   PromoteCoin,
@@ -6,14 +7,17 @@ import {
 } from '@modules/promote-coin/promote-coin.shema';
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
+import { BadRequestException } from '@nestjs/common/exceptions';
 import { InjectModel } from '@nestjs/mongoose';
 import { plainToClass } from 'class-transformer';
 import { Model, PipelineStage } from 'mongoose';
+import { lastValueFrom, map } from 'rxjs';
 import { STATUS } from './coin.enum';
 import { Coin, CoinDocument } from './coin.shema';
 import { CreateCoinDto } from './dtos/create-coin.dto';
 import { FilterCoinDto } from './dtos/filter-coin.dto';
 import { ResponseCoinDto } from './dtos/response-coin.dto';
+import { VoteCoinDto } from './dtos/vote-coin.dto';
 
 @Injectable()
 export class CoinsService {
@@ -199,8 +203,20 @@ export class CoinsService {
     return { result: 'success' };
   }
 
-  async upVote(slug) {
-    await this.coinModel.updateOne({ slug }, { $inc: { totalVotes: 1 } });
+  async upVote(dto: VoteCoinDto) {
+    const VERIFY_URL = `https://www.google.com/recaptcha/api/siteverify?secret=${RECAPTCHA_SECRET_KEY}&response=${dto.recaptchaToken}`;
+
+    const http = this.httpService.post(VERIFY_URL).pipe(map((res) => res.data));
+    const data = await lastValueFrom(http);
+
+    if (!data.success) {
+      throw new BadRequestException('Recaptcha token is wrong');
+    }
+
+    await this.coinModel.updateOne(
+      { slug: dto.slug },
+      { $inc: { totalVotes: 1 } },
+    );
     return { result: 'success' };
   }
 
