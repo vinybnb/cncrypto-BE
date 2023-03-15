@@ -21,6 +21,8 @@ import { CreateCoinDto } from './dtos/create-coin.dto';
 import { CoinSlugDto } from './dtos/coin-slug.dto';
 import { FilterCoinDto } from './dtos/filter-coin.dto';
 import { VoteCoinDto } from './dtos/vote-coin.dto';
+import { Put } from '@nestjs/common/decorators';
+import { UpdateCoinDto } from './dtos/update-coin.dto';
 
 @ApiTags('Coins')
 @ApiBearerAuth()
@@ -44,20 +46,23 @@ export class CoinsController {
 
   @Get('/detail')
   @UsePipes(new ValidationPipe({ transform: true }))
-  @ApiConsumes('application/x-www-form-urlencoded')
   async getCoinBySlug(@Query() query: CoinSlugDto) {
     return await this.coinService.getCoinBySlug(query.slug);
   }
 
   @Post('/create')
   @UsePipes(new ValidationPipe({ transform: true }))
-  @ApiConsumes('application/x-www-form-urlencoded')
   createNewCoin(@Body() body: CreateCoinDto) {
     return this.coinService.create(body);
   }
 
+  @Put('/update')
+  @UsePipes(new ValidationPipe({ transform: true }))
+  UpdateCoin(@Body() body: UpdateCoinDto) {
+    return this.coinService.update(body);
+  }
+
   @Delete('/delete')
-  @ApiConsumes('application/x-www-form-urlencoded')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(ROLE.ADMIN)
   deleteCoin(@Query() query: CoinSlugDto) {
@@ -65,7 +70,6 @@ export class CoinsController {
   }
 
   @UseGuards(CustomThrottlerGuard)
-  @ApiConsumes('application/x-www-form-urlencoded')
   @Throttle(10, 60)
   @Post('/vote')
   upVote(@Body() body: VoteCoinDto) {
@@ -73,7 +77,6 @@ export class CoinsController {
   }
 
   @Post('/approve')
-  @ApiConsumes('application/x-www-form-urlencoded')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(ROLE.ADMIN)
   approveCoin(@Body() body: CoinSlugDto) {
@@ -81,7 +84,6 @@ export class CoinsController {
   }
 
   @Post('/unapproved')
-  @ApiConsumes('application/x-www-form-urlencoded')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(ROLE.ADMIN)
   unapprovedCoin(@Body() body: CoinSlugDto) {

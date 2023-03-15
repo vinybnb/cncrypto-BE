@@ -17,6 +17,7 @@ import { Coin, CoinDocument } from './coin.shema';
 import { CreateCoinDto } from './dtos/create-coin.dto';
 import { FilterCoinDto } from './dtos/filter-coin.dto';
 import { ResponseCoinDto } from './dtos/response-coin.dto';
+import { UpdateCoinDto } from './dtos/update-coin.dto';
 import { VoteCoinDto } from './dtos/vote-coin.dto';
 
 @Injectable()
@@ -116,14 +117,23 @@ export class CoinsService {
   }
 
   async getTrendingCoins() {
-    const trendingCoins = await this.coinModel
-      .find({ approvedAt: { $ne: null } })
-      .sort({
-        change24h: -1,
-        change6h: -1,
-        volume24h: -1,
-      })
-      .limit(50);
+    // const trendingCoins = await this.coinModel
+    //   .find({ approvedAt: { $ne: null } })
+    //   .sort({
+    //     change24h: -1,
+    //     liquidityUsd: -1,
+    //     change6h: -1,
+    //     volume24h: -1,
+    //   })
+    //   .limit(50);
+
+    const coins = await this.coinModel.find().sort({ liquidityUsd: -1 });
+    const sortedCoins = coins.sort(
+      (a, b) =>
+        b.volume24h / (b.liquidityUsd || 1) -
+        a.volume24h / (a.liquidityUsd || 1),
+    );
+    const trendingCoins = sortedCoins.slice(0, 50);
 
     const objChains = await this.chainService.getObjectByChainId();
     const resultCoins = trendingCoins
@@ -190,6 +200,15 @@ export class CoinsService {
     const coin = await this.coinModel.create(body);
 
     return { data: coin };
+  }
+
+  async update(body: UpdateCoinDto) {
+    delete body.id;
+    delete body.slug;
+
+    await this.coinModel.updateOne({ _id: body._id }, body);
+
+    return { result: 'success' };
   }
 
   async updateCoinLogoBySlug(slug: string, file: Express.Multer.File) {

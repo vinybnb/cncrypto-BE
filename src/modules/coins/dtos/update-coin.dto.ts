@@ -1,16 +1,16 @@
-import {
-  IsEnum,
-  IsString,
-  IsArray,
-  IsNumber,
-  IsUrl,
-  IsDateString,
-} from 'class-validator';
 import { IsNullable } from '@common/decorators/validator.decorator';
-import { STATUS } from '../coin.enum';
 import { Transform } from 'class-transformer';
+import {
+  IsArray,
+  IsDateString,
+  IsNotEmpty,
+  IsNumber,
+  IsString,
+  IsUrl,
+} from 'class-validator';
+import { STATUS } from '../coin.enum';
 
-class CreateCoinChainDto {
+class UpdateCoinChainDto {
   @IsNumber()
   chainId: number;
 
@@ -20,7 +20,7 @@ class CreateCoinChainDto {
   pairAddress = '';
 }
 
-class CreateCoinLinkDto {
+class UpdateCoinLinkDto {
   @IsString()
   name: string;
 
@@ -32,23 +32,28 @@ class CreateCoinLinkDto {
   socialCount: number;
 }
 
-export class CreateCoinDto {
+export class UpdateCoinDto {
+  @IsString()
+  @IsNotEmpty()
+  _id: string;
+
   id: number;
 
-  @IsString()
   name: string;
 
   @IsString()
+  @IsNullable()
   symbol: string;
 
   slug: string;
 
   @IsUrl()
+  @IsNullable()
   logo: string = null;
 
   @IsArray()
   @IsNullable()
-  chains: CreateCoinChainDto[] = [];
+  chains: UpdateCoinChainDto[] = [];
 
   @IsString()
   @IsNullable()
@@ -58,9 +63,9 @@ export class CreateCoinDto {
   @IsNullable()
   descriptionCn: string = null;
 
-  @IsEnum(STATUS)
+  // @IsEnum(STATUS)
   @IsNullable()
-  status: STATUS = STATUS.APPROVING;
+  status: STATUS = null;
 
   @IsString()
   @IsNullable()
@@ -136,5 +141,5 @@ export class CreateCoinDto {
 
   @IsArray()
   @IsNullable()
-  links: CreateCoinLinkDto[];
+  links: UpdateCoinLinkDto[];
 }

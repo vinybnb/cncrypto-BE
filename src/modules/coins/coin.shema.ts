@@ -41,6 +41,9 @@ export class Coin {
   @Prop({ default: '' })
   description: string;
 
+  @Prop({ default: '' })
+  descriptionCn: string;
+
   @Prop({ default: STATUS.APPROVING })
   status: STATUS;
 
