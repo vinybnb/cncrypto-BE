@@ -40,8 +40,8 @@ export class CoinsController {
   @Get('/trending')
   @UsePipes(new ValidationPipe({ transform: true }))
   @ApiConsumes('application/x-www-form-urlencoded')
-  async getTrendingCoins() {
-    return await this.coinService.getTrendingCoins();
+  async getTrendingCoins(@Query() query: FilterCoinDto) {
+    return await this.coinService.getTrendingCoins(query);
   }
 
   @Get('/detail')

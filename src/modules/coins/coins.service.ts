@@ -116,7 +116,34 @@ export class CoinsService {
     };
   }
 
-  async getTrendingCoins() {
+  async getTrendingCoins(filter: FilterCoinDto) {
+    const { chainId, search = '', page = 1, pageSize = 10 } = filter;
+
+    console.log(filter);
+
+    const pipeline: PipelineStage[] = [];
+
+    if (search) {
+      pipeline.push({
+        $match: {
+          $or: [
+            { name: { $regex: search, $options: 'gi' } },
+            { symbol: { $regex: search, $options: 'gi' } },
+            { contractAddress: { $regex: search, $options: 'gi' } },
+          ],
+        },
+      });
+    }
+
+    if (chainId && chainId !== -1) {
+      pipeline.push({
+        $match: { chains: { $elemMatch: { chainId: +chainId } } },
+      });
+    }
+    pipeline.push({
+      $sort: { liquidityUsd: -1 },
+    });
+
     // const trendingCoins = await this.coinModel
     //   .find({ approvedAt: { $ne: null } })
     //   .sort({
@@ -127,25 +154,27 @@ export class CoinsService {
     //   })
     //   .limit(50);
 
-    const coins = await this.coinModel.find().sort({ liquidityUsd: -1 });
+    const coins = await this.coinModel.aggregate(pipeline);
     const sortedCoins = coins.sort(
       (a, b) =>
         b.volume24h / (b.liquidityUsd || 1) -
         a.volume24h / (a.liquidityUsd || 1),
     );
-    const trendingCoins = sortedCoins.slice(0, 50);
+    const trendingCoins = sortedCoins.slice((page - 1) * pageSize, pageSize);
 
     const objChains = await this.chainService.getObjectByChainId();
-    const resultCoins = trendingCoins
-      .map((item: any) => item?.toObject())
-      .map((item) => ({
-        ...item,
-        chains: item?.chains.map((chain) => ({
-          ...chain,
-          chain: objChains[chain.chainId],
-        })),
-      }));
+    const resultCoins = trendingCoins.map((item) => ({
+      ...item,
+      chains: item?.chains.map((chain) => ({
+        ...chain,
+        chain: objChains[chain.chainId],
+      })),
+    }));
+
     return {
+      currentPage: +page,
+      totalPage: Math.ceil(coins?.length / pageSize),
+      totalItem: coins?.length,
       data: resultCoins.map((item) => plainToClass(ResponseCoinDto, item)),
     };
   }
