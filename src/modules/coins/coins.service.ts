@@ -49,8 +49,31 @@ export class CoinsService {
         change1h: { $toDouble: '$change1h' },
         change6h: { $toDouble: '$change6h' },
         change24h: { $toDouble: '$change24h' },
+        liquidityUsdNumber: { $toDouble: '$liquidityUsd' },
+        volume24hNumber: { $toDouble: '$volume24h' },
       },
     });
+
+    pipeline.push({
+      $addFields: {
+        trending: {
+          $cond: [
+            {
+              $or: [
+                { $eq: ['$liquidityUsdNumber', 0] },
+                { $eq: ['$liquidityUsdNumber', null] },
+                { $eq: ['$volume24hNumber', 0] },
+                { $eq: ['$volume24hNumber', null] },
+              ],
+            },
+            0,
+            { $divide: ['$volume24hNumber', '$liquidityUsdNumber'] },
+          ],
+        },
+      },
+    });
+
+    pipeline.push({ $unset: ['volume24hNumber', 'liquidityUsdNumber'] });
 
     if (search) {
       pipeline.push({
@@ -126,14 +149,6 @@ export class CoinsService {
     const { chainId, search = '', page = 1, pageSize = 10 } = filter;
 
     const pipeline: PipelineStage[] = [];
-
-    pipeline.push({
-      $addFields: {
-        change1h: { $toDouble: '$change1h' },
-        change6h: { $toDouble: '$change6h' },
-        change24h: { $toDouble: '$change24h' },
-      },
-    });
 
     if (search) {
       pipeline.push({
