@@ -44,6 +44,14 @@ export class CoinsService {
 
     const pipeline: PipelineStage[] = [];
 
+    pipeline.push({
+      $addFields: {
+        change1h: { $toDouble: '$change1h' },
+        change6h: { $toDouble: '$change6h' },
+        change24h: { $toDouble: '$change24h' },
+      },
+    });
+
     if (search) {
       pipeline.push({
         $match: {
@@ -73,9 +81,7 @@ export class CoinsService {
     if (promoted === 'true') {
       const now = new Date().toISOString();
       const promoted = await this.promoteCoinModel.find(
-        {
-          expiredAt: { $gte: now },
-        },
+        { expiredAt: { $gte: now } },
         { coin: 1 },
       );
       pipeline.push({
@@ -119,9 +125,15 @@ export class CoinsService {
   async getTrendingCoins(filter: FilterCoinDto) {
     const { chainId, search = '', page = 1, pageSize = 10 } = filter;
 
-    console.log(filter);
-
     const pipeline: PipelineStage[] = [];
+
+    pipeline.push({
+      $addFields: {
+        change1h: { $toDouble: '$change1h' },
+        change6h: { $toDouble: '$change6h' },
+        change24h: { $toDouble: '$change24h' },
+      },
+    });
 
     if (search) {
       pipeline.push({
@@ -155,12 +167,18 @@ export class CoinsService {
     //   .limit(50);
 
     const coins = await this.coinModel.aggregate(pipeline);
-    const sortedCoins = coins.sort(
+    const validCoins = coins.filter(
+      (item) => +item?.volume24h > 0 && +item?.liquidityUsd > 0,
+    );
+    const sortedCoins = validCoins.sort(
       (a, b) =>
         b.volume24h / (b.liquidityUsd || 1) -
         a.volume24h / (a.liquidityUsd || 1),
     );
-    const trendingCoins = sortedCoins.slice((page - 1) * pageSize, pageSize);
+    const trendingCoins = sortedCoins.slice(
+      (page - 1) * pageSize,
+      page * pageSize,
+    );
 
     const objChains = await this.chainService.getObjectByChainId();
     const resultCoins = trendingCoins.map((item) => ({
@@ -173,8 +191,8 @@ export class CoinsService {
 
     return {
       currentPage: +page,
-      totalPage: Math.ceil(coins?.length / pageSize),
-      totalItem: coins?.length,
+      totalPage: Math.ceil(validCoins?.length / pageSize),
+      totalItem: validCoins?.length,
       data: resultCoins.map((item) => plainToClass(ResponseCoinDto, item)),
     };
   }
