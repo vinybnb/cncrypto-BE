@@ -49,6 +49,7 @@ export class CoinsService {
         change1h: { $toDouble: '$change1h' },
         change6h: { $toDouble: '$change6h' },
         change24h: { $toDouble: '$change24h' },
+        volume24h: { $toDouble: '$volume24h' },
         liquidityUsdNumber: { $toDouble: '$liquidityUsd' },
         volume24hNumber: { $toDouble: '$volume24h' },
       },
