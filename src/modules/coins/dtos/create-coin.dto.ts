@@ -108,31 +108,45 @@ export class CreateCoinDto {
   @IsNumber()
   @IsNullable()
   @Transform(({ value }) => +value || 0)
-  liquidity = 0;
+  liquidityUsd = 0;
 
   @IsNumber()
   @Transform(({ value }) => +value || 0)
-  h1 = 0;
-
-  @IsNumber()
-  @IsNullable()
-  @Transform(({ value }) => +value || 0)
-  h6 = 0;
+  change1h = 0;
 
   @IsNumber()
   @IsNullable()
   @Transform(({ value }) => +value || 0)
-  h24 = 0;
+  change6h = 0;
 
   @IsNumber()
   @IsNullable()
   @Transform(({ value }) => +value || 0)
-  tnxH6 = 0;
+  change24h = 0;
+
+  @IsNumber()
+  @Transform(({ value }) => +value || 0)
+  volume1h = 0;
 
   @IsNumber()
   @IsNullable()
   @Transform(({ value }) => +value || 0)
-  tnxH24 = 0;
+  volume6h = 0;
+
+  @IsNumber()
+  @IsNullable()
+  @Transform(({ value }) => +value || 0)
+  volume24h = 0;
+
+  @IsNumber()
+  @IsNullable()
+  @Transform(({ value }) => +value || 0)
+  tnx6h = 0;
+
+  @IsNumber()
+  @IsNullable()
+  @Transform(({ value }) => +value || 0)
+  tnx24h = 0;
 
   @IsArray()
   @IsNullable()

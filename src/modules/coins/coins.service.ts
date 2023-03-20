@@ -234,14 +234,12 @@ export class CoinsService {
     return { data: plainToClass(ResponseCoinDto, resultCoin) };
   }
 
-  async create(body: CreateCoinDto) {
+  async create(dto: CreateCoinDto) {
     // const maxIdCoin = await this.coinRepo
     const maxIdCoin = await this.coinModel.findOne({}).sort({ id: -1 });
 
-    console.log(maxIdCoin);
-
-    body.id = (+maxIdCoin?.id || 0) + 1;
-    const slug = toSlug(body?.name);
+    dto.id = (+maxIdCoin?.id || 0) + 1;
+    const slug = toSlug(dto?.name);
 
     let countBySLug = await this.coinModel.count({ slug: slug });
 
@@ -255,21 +253,85 @@ export class CoinsService {
           break;
         }
       }
-      body.slug = slug + '-' + countBySLug;
+      dto.slug = slug + '-' + countBySLug;
     } else {
-      body.slug = slug;
+      dto.slug = slug;
     }
 
-    const coin = await this.coinModel.create(body);
+    for (const chain of dto.chains) {
+      try {
+        const http = this.httpService
+          .get(
+            'https://api.dexscreener.com/latest/dex/tokens/' +
+              chain.contractAddress,
+          )
+          .pipe(map((res) => res.data));
+        const data = await lastValueFrom(http);
+        if (!data?.pairs) {
+          continue;
+        }
+        const tokenInfo = data?.pairs?.find(
+          (item) =>
+            item?.baseToken?.address?.toLowerCase() ===
+            chain.contractAddress?.toLowerCase(),
+        );
+        if (!tokenInfo) {
+          continue;
+        }
+        dto.price = tokenInfo?.priceUsd;
+        dto.liquidityUsd = tokenInfo?.liquidity?.usd || 0;
+        dto.volume24h = tokenInfo?.volume.h24;
+        dto.volume6h = tokenInfo?.volume.h6;
+        dto.volume1h = tokenInfo?.volume.h24;
+        dto.change24h = tokenInfo?.priceChange.h24;
+        dto.change6h = tokenInfo?.priceChange.h6;
+        dto.change1h = tokenInfo?.priceChange.h24;
+        break;
+      } catch (error) {}
+    }
+
+    const coin = await this.coinModel.create(dto);
 
     return { data: coin };
   }
 
-  async update(body: UpdateCoinDto) {
-    delete body.id;
-    delete body.slug;
+  async update(dto: UpdateCoinDto) {
+    delete dto.id;
+    delete dto.slug;
 
-    await this.coinModel.updateOne({ _id: body._id }, body);
+    for (const chain of dto.chains) {
+      try {
+        const http = this.httpService
+          .get(
+            'https://api.dexscreener.com/latest/dex/tokens/' +
+              chain.contractAddress,
+          )
+          .pipe(map((res) => res.data));
+        const data = await lastValueFrom(http);
+        if (!data?.pairs) {
+          continue;
+        }
+        const tokenInfo = data?.pairs?.find(
+          (item) =>
+            item?.baseToken?.address?.toLowerCase() ===
+            chain.contractAddress?.toLowerCase(),
+        );
+        if (!tokenInfo) {
+          continue;
+        }
+        dto.price = tokenInfo?.priceUsd;
+        dto.liquidityUsd = tokenInfo?.liquidity?.usd || 0;
+        dto.volume24h = tokenInfo?.volume.h24;
+        dto.volume6h = tokenInfo?.volume.h6;
+        dto.volume1h = tokenInfo?.volume.h24;
+        dto.change24h = tokenInfo?.priceChange.h24;
+        dto.change6h = tokenInfo?.priceChange.h6;
+        dto.change1h = tokenInfo?.priceChange.h24;
+        break;
+      } catch (error) {}
+    }
+
+    await this.coinModel.updateOne({ _id: dto._id }, dto);
 
     return { result: 'success' };
   }
