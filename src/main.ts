@@ -3,13 +3,13 @@ import { NestFactory } from '@nestjs/core';
 import cookieParser from 'cookie-parser';
 
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-
-import { AppModule } from './app.module';
 import winston from 'winston';
 import {
   utilities as nestWinstonModuleUtilities,
   WinstonModule,
 } from 'nest-winston';
+
+import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
