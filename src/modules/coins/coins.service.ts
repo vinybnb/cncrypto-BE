@@ -1,12 +1,12 @@
 import { toSlug } from '@common/helpers/string.helper';
-import { RECAPTCHA_SECRET_KEY } from '@configs/app';
+import { BOT_TOKEN_TELEGRAM, RECAPTCHA_SECRET_KEY } from '@configs/app';
 import { ChainService } from '@modules/chains/chains.service';
 import {
   PromoteCoin,
   PromoteCoinDocument,
 } from '@modules/promote-coin/promote-coin.shema';
 import { HttpService } from '@nestjs/axios';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { BadRequestException } from '@nestjs/common/exceptions';
 import { InjectModel } from '@nestjs/mongoose';
 import { plainToClass } from 'class-transformer';
@@ -28,6 +28,7 @@ export class CoinsService {
     private promoteCoinModel: Model<PromoteCoinDocument>,
     private chainService: ChainService,
     private readonly httpService: HttpService,
+    private readonly logger: Logger,
   ) {}
 
   async findAll(filter: FilterCoinDto) {
@@ -111,6 +112,10 @@ export class CoinsService {
       pipeline.push({
         $match: { _id: { $in: promoted?.map((item) => item?.coin) } },
       });
+    }
+
+    if (sortBy === 'trending') {
+      pipeline.push({ $match: { volume24hNumber: { $gt: 10000 } } });
     }
 
     const countAggregate = await this.coinModel.aggregate([
@@ -260,24 +265,7 @@ export class CoinsService {
 
     for (const chain of dto.chains) {
       try {
-        const http = this.httpService
-          .get(
-            'https://api.dexscreener.com/latest/dex/tokens/' +
-              chain.contractAddress,
-          )
-          .pipe(map((res) => res.data));
-        const data = await lastValueFrom(http);
-        if (!data?.pairs) {
-          continue;
-        }
-        const tokenInfo = data?.pairs?.find(
-          (item) =>
-            item?.baseToken?.address?.toLowerCase() ===
-            chain.contractAddress?.toLowerCase(),
-        );
-        if (!tokenInfo) {
-          continue;
-        }
+        const tokenInfo = await this.getTokenInfo(chain.contractAddress);
         dto.price = tokenInfo?.priceUsd;
         dto.liquidityUsd = tokenInfo?.liquidity?.usd || 0;
         dto.volume24h = tokenInfo?.volume.h24;
@@ -288,6 +276,26 @@ export class CoinsService {
         dto.change1h = tokenInfo?.priceChange.h24;
         break;
       } catch (error) {}
+    }
+
+    if (Array.isArray(dto.links)) {
+      const linksWIthSocialCountPromise = dto.links.map(async (item) => {
+        try {
+          if (item?.name?.toUpperCase()?.includes('TELEGRAM')) {
+            const socialCount = await this.getChatMembersCountTelegram(
+              item.link,
+            );
+            return { ...item, socialCount };
+          }
+        } catch (error) {
+          this.logger.error(
+            error?.message,
+            'getChatMembersCountTelegram ' + item.link,
+          );
+        }
+        return item;
+      });
+      dto.links = await Promise.all(linksWIthSocialCountPromise);
     }
 
     const coin = await this.coinModel.create(dto);
@@ -301,24 +309,7 @@ export class CoinsService {
 
     for (const chain of dto.chains) {
       try {
-        const http = this.httpService
-          .get(
-            'https://api.dexscreener.com/latest/dex/tokens/' +
-              chain.contractAddress,
-          )
-          .pipe(map((res) => res.data));
-        const data = await lastValueFrom(http);
-        if (!data?.pairs) {
-          continue;
-        }
-        const tokenInfo = data?.pairs?.find(
-          (item) =>
-            item?.baseToken?.address?.toLowerCase() ===
-            chain.contractAddress?.toLowerCase(),
-        );
-        if (!tokenInfo) {
-          continue;
-        }
+        const tokenInfo = await this.getTokenInfo(chain.contractAddress);
         dto.price = tokenInfo?.priceUsd;
         dto.liquidityUsd = tokenInfo?.liquidity?.usd || 0;
         dto.volume24h = tokenInfo?.volume.h24;
@@ -329,6 +320,26 @@ export class CoinsService {
         dto.change1h = tokenInfo?.priceChange.h24;
         break;
       } catch (error) {}
+    }
+
+    if (Array.isArray(dto.links)) {
+      const linksWIthSocialCountPromise = dto.links.map(async (item) => {
+        try {
+          if (item?.name?.toUpperCase()?.includes('TELEGRAM')) {
+            const socialCount = await this.getChatMembersCountTelegram(
+              item.link,
+            );
+            return { ...item, socialCount };
+          }
+        } catch (error) {
+          this.logger.error(
+            error?.message,
+            'getChatMembersCountTelegram ' + item.link,
+          );
+        }
+        return item;
+      });
+      dto.links = await Promise.all(linksWIthSocialCountPromise);
     }
 
     await this.coinModel.updateOne({ _id: dto._id }, dto);
@@ -382,5 +393,34 @@ export class CoinsService {
     await coin.save();
 
     return { data: coin };
+  }
+
+  private async getTokenInfo(address: string) {
+    const http = this.httpService
+      .get('https://api.dexscreener.com/latest/dex/tokens/' + address)
+      .pipe(map((res) => res.data));
+    const data = await lastValueFrom(http);
+    if (!data?.pairs) {
+      return null;
+    }
+    const tokenInfo = data?.pairs?.find(
+      (item) =>
+        item?.baseToken?.address?.toLowerCase() === address?.toLowerCase(),
+    );
+    if (!tokenInfo) {
+      return null;
+    }
+    return tokenInfo;
+  }
+
+  private async getChatMembersCountTelegram(idOrUrl: string) {
+    const http = this.httpService
+      .get(
+        `https://api.telegram.org/bot${BOT_TOKEN_TELEGRAM}/getChatMembersCount?chat_id=@` +
+          idOrUrl.replace(/^.*\//g, ''),
+      )
+      .pipe(map((res) => res.data));
+    const data = await lastValueFrom(http);
+    return data.result || 0;
   }
 }

@@ -1,6 +1,12 @@
-import { Module } from '@nestjs/common';
+import { Logger, Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 
+import { ChainModule } from '@modules/chains/chains.module';
+import { Chain, ChainSchema } from '@modules/chains/coin.shema';
+import {
+  PromoteCoin,
+  PromoteCoinSchema,
+} from '@modules/promote-coin/promote-coin.shema';
 import { HttpModule } from '@nestjs/axios';
 import {
   PromotedList,
@@ -10,12 +16,6 @@ import { Coin, CoinSchema } from './coin.shema';
 import { CoinsController } from './coins.controller';
 import { CoinsService } from './coins.service';
 import { CustomThrottlerGuard } from './custom-throttler.guard';
-import { Chain, ChainSchema } from '@modules/chains/coin.shema';
-import {
-  PromoteCoin,
-  PromoteCoinSchema,
-} from '@modules/promote-coin/promote-coin.shema';
-import { ChainModule } from '@modules/chains/chains.module';
 
 @Module({
   imports: [
@@ -28,7 +28,7 @@ import { ChainModule } from '@modules/chains/chains.module';
     HttpModule,
     ChainModule,
   ],
-  providers: [CoinsService, CustomThrottlerGuard],
+  providers: [CoinsService, CustomThrottlerGuard, Logger],
   controllers: [CoinsController],
 })
 export class CoinsModule {}
