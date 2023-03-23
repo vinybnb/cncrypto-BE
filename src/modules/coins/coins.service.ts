@@ -75,6 +75,10 @@ export class CoinsService {
       },
     });
 
+    if (sortBy === 'trending') {
+      pipeline.push({ $match: { volume24hNumber: { $gt: 10000 } } });
+    }
+
     pipeline.push({ $unset: ['volume24hNumber', 'liquidityUsdNumber'] });
 
     if (search) {
@@ -112,10 +116,6 @@ export class CoinsService {
       pipeline.push({
         $match: { _id: { $in: promoted?.map((item) => item?.coin) } },
       });
-    }
-
-    if (sortBy === 'trending') {
-      pipeline.push({ $match: { volume24hNumber: { $gt: 10000 } } });
     }
 
     const countAggregate = await this.coinModel.aggregate([
