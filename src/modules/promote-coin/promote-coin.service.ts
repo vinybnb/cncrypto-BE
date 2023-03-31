@@ -1,16 +1,6 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import mongoose, {
-  FilterQuery,
-  Model,
-  PipelineStage,
-  QueryOptions,
-} from 'mongoose';
-import { Coin, CoinDocument } from '../coins/coin.shema';
+import mongoose, { FilterQuery, Model } from 'mongoose';
 import { CreatePromoteCoinDto } from './dtos/create-promote-coin.dto';
 import { FilterPromoteCoinDto } from './dtos/filter-promote-coin.dto';
 import { PromoteCoinIdDto } from './dtos/promote-coin-id.dto';
@@ -76,7 +66,7 @@ export class PromoteCoinService {
       ...dto,
       coin: new mongoose.Types.ObjectId(dto.coin),
     });
-    
+
     return { data: coin };
   }
 

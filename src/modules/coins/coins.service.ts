@@ -36,6 +36,7 @@ export class CoinsService {
       chainId,
       approved,
       promoted,
+      listingType,
       search = '',
       sortBy = 'createdAt',
       sortDirection = 'desc',
@@ -107,6 +108,10 @@ export class CoinsService {
       pipeline.push({ $match: { approvedAt: { $ne: null } } });
     }
 
+    if (listingType?.length > 0) {
+      pipeline.push({ $match: { listingType: { $eq: listingType } } });
+    }
+
     if (promoted === 'true') {
       const now = new Date().toISOString();
       const promoted = await this.promoteCoinModel.find(
@@ -124,6 +129,19 @@ export class CoinsService {
     ]);
     const count = countAggregate?.[0]?.count || 0;
 
+    pipeline.push({
+      $lookup: {
+        from: 'presale-platform',
+        localField: 'presalePlatform',
+        foreignField: '_id',
+        as: 'presalePlatform',
+      },
+    });
+    pipeline.push({
+      $addFields: {
+        presalePlatform: { $arrayElemAt: ['$presalePlatform', 0] },
+      },
+    });
     pipeline.push({
       $sort: { [sortBy]: sortDirection.toLowerCase() === 'asc' ? 1 : -1 },
     });

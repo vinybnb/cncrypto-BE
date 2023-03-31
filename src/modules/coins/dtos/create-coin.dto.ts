@@ -56,6 +56,10 @@ export class CreateCoinDto {
 
   @IsString()
   @IsNullable()
+  listingType: string = null;
+
+  @IsString()
+  @IsNullable()
   descriptionCn: string = null;
 
   @IsEnum(STATUS)
@@ -76,15 +80,19 @@ export class CreateCoinDto {
 
   @IsString()
   @IsNullable()
-  preSaleLink: string = null;
+  presaleLink: string = null;
 
   @IsString()
   @IsNullable()
-  preSalePlatform: string = null;
+  presalePlatform: string = null;
 
   @IsDateString()
   @IsNullable()
-  preSaleAt: Date = null;
+  presaleStartAt: Date = null;
+
+  @IsDateString()
+  @IsNullable()
+  presaleEndAt: Date = null;
 
   @IsDateString()
   @IsNullable()

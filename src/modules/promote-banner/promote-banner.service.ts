@@ -1,11 +1,6 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, PipelineStage, QueryOptions } from 'mongoose';
-import { Coin, CoinDocument } from '../coins/coin.shema';
+import { Model, PipelineStage } from 'mongoose';
 import { CreatePromoteBannerDto } from './dtos/create-promote-banner.dto';
 import { FilterPromoteBannerDto } from './dtos/filter-promote-banner.dto';
 import { PromoteBannerIdDto } from './dtos/promote-banner-id.dto';

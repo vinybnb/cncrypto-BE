@@ -57,6 +57,10 @@ export class UpdateCoinDto {
 
   @IsString()
   @IsNullable()
+  listingType: string = null;
+
+  @IsString()
+  @IsNullable()
   description: string = null;
 
   @IsString()
@@ -81,15 +85,19 @@ export class UpdateCoinDto {
 
   @IsString()
   @IsNullable()
-  preSaleLink: string = null;
+  presaleLink: string = null;
 
   @IsString()
   @IsNullable()
-  preSalePlatform: string = null;
+  presalePlatform: string = null;
 
   @IsDateString()
   @IsNullable()
-  preSaleAt: Date = null;
+  presaleStartAt: Date = null;
+
+  @IsDateString()
+  @IsNullable()
+  presaleEndAt: Date = null;
 
   @IsDateString()
   @IsNullable()

@@ -9,6 +9,11 @@ export class FilterCoinDto {
   @ApiProperty({ required: false })
   slug: string;
 
+  @IsString()
+  @IsNullable()
+  @ApiProperty({ required: false })
+  listingType: string;
+
   @IsNumber()
   @IsNullable()
   @Transform(({ value }) => +value || undefined)

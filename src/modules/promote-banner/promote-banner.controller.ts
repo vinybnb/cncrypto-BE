@@ -1,26 +1,25 @@
+import { JwtAuthGuard } from '@modules/auth/guards/jwt-auth.guard';
 import {
-  Controller,
-  Post,
   Body,
-  Get,
-  Param,
-  UseGuards,
+  Controller,
   Delete,
+  Get,
+  Post,
+  Put,
+  Query,
+  UseGuards,
   UsePipes,
   ValidationPipe,
-  Query,
-  Put,
 } from '@nestjs/common';
-import { JwtAuthGuard } from '@modules/auth/guards/jwt-auth.guard';
+import { ApiTags } from '@nestjs/swagger';
 import { Roles } from 'src/common/decorators/roles.decorator';
 import { ROLE } from 'src/common/enums/role.enum';
 import { RolesGuard } from 'src/common/guards/roles.guard';
-import { PromoteBannerService } from './promote-banner.service';
-import { ApiTags } from '@nestjs/swagger';
 import { CreatePromoteBannerDto } from './dtos/create-promote-banner.dto';
 import { FilterPromoteBannerDto } from './dtos/filter-promote-banner.dto';
 import { PromoteBannerIdDto } from './dtos/promote-banner-id.dto';
 import { UpdatePromoteBannerDto } from './dtos/update-promote-banner.dto';
+import { PromoteBannerService } from './promote-banner.service';
 
 @ApiTags('Promoted Banner')
 @Controller('/api/promote-banner')

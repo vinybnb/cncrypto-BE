@@ -1,6 +1,7 @@
+import { PresalePlatform } from '@modules/presale-flatform/presale-platform.shema';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
-import { STATUS } from './coin.enum';
+import mongoose, { HydratedDocument } from 'mongoose';
+import { LISTING_TYPE, STATUS } from './coin.enum';
 
 @Schema({ timestamps: true })
 export class Coin {
@@ -35,8 +36,8 @@ export class Coin {
     pairAddress: string;
   }[];
 
-  @Prop({ default: null })
-  contractAddress: string;
+  @Prop({ default: LISTING_TYPE.COIN })
+  listingType: LISTING_TYPE;
 
   @Prop({ default: '' })
   description: string;
@@ -56,20 +57,23 @@ export class Coin {
   @Prop({ default: null })
   launchAt: Date;
 
-  @Prop({ default: null })
-  preSaleLink: string;
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'PresalePlatform' })
+  presalePlatform: PresalePlatform;
 
   @Prop({ default: null })
-  preSalePlatform: string;
+  presaleLink: string;
 
   @Prop({ default: null })
-  preSaleAt: Date;
+  presaleStartAt: Date;
 
-  // this will create a virtual property called 'fullName'
-  @Prop({ virtual: true, type: String })
-  get preSalePeriod() {
-    return `${this.preSaleAt}`;
-  }
+  @Prop({ default: null })
+  presaleEndAt: Date;
+
+  @Prop({ default: null })
+  presaleSoftCap: number;
+
+  @Prop({ default: null })
+  presaleHardCap: number;
 
   @Prop({ default: null })
   approvedAt: Date;

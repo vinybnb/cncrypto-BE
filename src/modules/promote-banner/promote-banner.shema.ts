@@ -1,7 +1,10 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import mongoose, { HydratedDocument } from 'mongoose';
+import { HydratedDocument } from 'mongoose';
 
-@Schema({ collection: 'promote-banner', timestamps: { createdAt: true, updatedAt: false } })
+@Schema({
+  collection: 'promote-banner',
+  timestamps: { createdAt: true, updatedAt: false },
+})
 export class PromoteBanner {
   @Prop()
   link: string;

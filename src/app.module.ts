@@ -15,6 +15,7 @@ import { PromoteCoinModule } from '@modules/promote-coin/promote-coin.module';
 import { PromotedModule } from '@modules/promoted-list/promoted-list.module';
 import { UsersModule } from '@modules/users/users.module';
 import { MongooseModule } from '@nestjs/mongoose';
+import { PresalePlatformModule } from '@modules/presale-flatform/presale-platform.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { MongooseModule } from '@nestjs/mongoose';
     PromotedModule,
     PromoteBannerModule,
     PromoteCoinModule,
+    PresalePlatformModule,
   ],
   controllers: [AppController],
   providers: [AppService],

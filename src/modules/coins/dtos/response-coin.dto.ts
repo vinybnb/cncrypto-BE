@@ -41,17 +41,17 @@ export class ResponseCoinDto {
   @Expose()
   launchPeriod: string = null;
 
-  preSaleLink: string = null;
+  presaleLink: string = null;
 
-  preSalePlatform: string = null;
+  presalePlatform: string = null;
 
-  preSaleAt: Date = null;
+  presaleAt: Date = null;
 
   @Transform(({ obj }) =>
-    obj?.preSaleAt ? moment(obj.preSaleAt).fromNow() : null,
+    obj?.presaleAt ? moment(obj.presaleAt).fromNow() : null,
   )
   @Expose()
-  preSalePeriod: string = null;
+  presalePeriod: string = null;
 
   approvedAt: Date = null;
 

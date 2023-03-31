@@ -2,7 +2,10 @@ import { Coin } from '@modules/coins/coin.shema';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
 
-@Schema({ collection: 'promote-coin', timestamps: { createdAt: true, updatedAt: false } })
+@Schema({
+  collection: 'promote-coin',
+  timestamps: { createdAt: true, updatedAt: false },
+})
 export class PromoteCoin {
   @Prop()
   startAt: Date;

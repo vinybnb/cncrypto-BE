@@ -3,6 +3,11 @@ export enum STATUS {
   APPROVED = 'approved',
 }
 
+export enum LISTING_TYPE {
+  COIN = 'coin',
+  PRE_SALE = 'presale',
+}
+
 export enum CHAIN {
   BSC = 'BSC',
   ETH = 'ETH',
