@@ -1,5 +1,9 @@
 import { toSlug } from '@common/helpers/string.helper';
-import { BOT_TOKEN_TELEGRAM, RECAPTCHA_SECRET_KEY } from '@configs/app';
+import {
+  API_TOKEN_TWITTER,
+  BOT_TOKEN_TELEGRAM,
+  RECAPTCHA_SECRET_KEY,
+} from '@configs/app';
 import { ChainService } from '@modules/chains/chains.service';
 import {
   PromoteCoin,
@@ -305,10 +309,14 @@ export class CoinsService {
             );
             return { ...item, socialCount };
           }
+          if (item?.name?.toUpperCase()?.includes('TWITTER')) {
+            const socialCount = await this.getFollowCountTwitter(item.link);
+            return { ...item, socialCount };
+          }
         } catch (error) {
           this.logger.error(
             error?.message,
-            'getChatMembersCountTelegram ' + item.link,
+            'linksWIthSocialCount ' + item.link,
           );
         }
         return item;
@@ -349,10 +357,14 @@ export class CoinsService {
             );
             return { ...item, socialCount };
           }
+          if (item?.name?.toUpperCase()?.includes('TWITTER')) {
+            const socialCount = await this.getFollowCountTwitter(item.link);
+            return { ...item, socialCount };
+          }
         } catch (error) {
           this.logger.error(
             error?.message,
-            'getChatMembersCountTelegram ' + item.link,
+            'linksWIthSocialCountPromise ' + item.link,
           );
         }
         return item;
@@ -440,5 +452,23 @@ export class CoinsService {
       .pipe(map((res) => res.data));
     const data = await lastValueFrom(http);
     return data.result || 0;
+  }
+
+  private async getFollowCountTwitter(idOrUrl: string) {
+    const http = this.httpService
+      .get(
+        `https://api.twitter.com/2/users/by/username/` +
+          idOrUrl.replace(/^.*\//g, '') +
+          `?user.fields=public_metrics`,
+        {
+          headers: {
+            Authorization: 'Bearer ' + API_TOKEN_TWITTER,
+          },
+        },
+      )
+      .pipe(map((res) => res.data));
+    const data = await lastValueFrom(http);
+    console.log(data);
+    return data?.data?.public_metrics?.followers_count || 0;
   }
 }
