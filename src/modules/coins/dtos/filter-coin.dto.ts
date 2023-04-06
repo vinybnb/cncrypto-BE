@@ -25,6 +25,10 @@ export class FilterCoinDto {
   @ApiProperty({ required: false })
   approved: 'true' | 'false';
 
+  @IsNullable()
+  @ApiProperty({ required: false })
+  filter: { [key: string]: { [key: string]: any } };
+
   @IsBooleanString()
   @IsNullable()
   @ApiProperty({ required: false })

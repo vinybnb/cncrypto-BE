@@ -36,18 +36,19 @@ export class CoinsService {
     private readonly logger: Logger,
   ) {}
 
-  async findAll(filter: FilterCoinDto) {
+  async findAll(filterDto: FilterCoinDto) {
     const {
       chainId,
       approved,
       promoted,
       listingType,
+      filter,
       search = '',
       sortBy = 'createdAt',
       sortDirection = 'desc',
       page = 1,
       pageSize = 10,
-    } = filter;
+    } = filterDto;
 
     const pipeline: PipelineStage[] = [];
 
@@ -115,6 +116,20 @@ export class CoinsService {
 
     if (listingType?.length > 0) {
       pipeline.push({ $match: { listingType: { $eq: listingType } } });
+    }
+
+    if (filter) {
+      const matchClause: any = {};
+      for (const key in filter) {
+        const matchField = {};
+        for (const opKey in filter[key]) {
+          matchField['$' + opKey?.replace(/^\$/g, '')] = filter[key][opKey];
+        }
+        matchClause[key] = matchField;
+      }
+      pipeline.push({
+        $match: matchClause,
+      });
     }
 
     if (promoted === 'true') {
