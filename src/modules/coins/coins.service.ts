@@ -23,6 +23,7 @@ import { FilterCoinDto } from './dtos/filter-coin.dto';
 import { ResponseCoinDto } from './dtos/response-coin.dto';
 import { UpdateCoinDto } from './dtos/update-coin.dto';
 import { VoteCoinDto } from './dtos/vote-coin.dto';
+import TelegramBot from 'node-telegram-bot-api';
 
 @Injectable()
 export class CoinsService {
@@ -411,6 +412,61 @@ export class CoinsService {
     coin.status = STATUS.APPROVED;
     coin.approvedAt = new Date();
     await coin.save();
+
+    const objChains = await this.chainService.getObjectByChainId();
+
+    const resultCoin = {
+      ...coin.toObject(),
+      chains: coin.toObject().chains?.map((chain) => ({
+        ...chain,
+        chain: objChains[chain.chainId],
+      })),
+    };
+
+    const tokenTelegramBot = '6134109204:AAHhiTQ-4hsJhTXZAc9s4gpQpz9qMlKSrvs';
+
+    const botTelegram = new TelegramBot(tokenTelegramBot, {
+      polling: true,
+      parse_mode: 'Markdown',
+    });
+
+    const opts = {
+      parse_mode: 'HTML',
+    };
+
+    const message = `
+    
+    <b>⚡️ 月兔极速上币 - CNCrypto Express Listing - BSC</b>
+    
+    <b>代币 Coin:</b> <a href="https://CNCrypto.io/coins/${resultCoin?.slug}">${
+      resultCoin?.name
+    }</a>${
+      resultCoin?.links?.find((item) => item?.name?.includes('TELEGRAM')) &&
+      ` | <a href="${
+        resultCoin?.links?.find((item) => item?.name?.includes('TELEGRAM'))
+          .socialCount
+      }"><b>电报群 Telegram (英):</b></a>`
+    }
+    
+    ${resultCoin?.chains
+      ?.map(
+        (item) =>
+          `<b>合约 Contract ${item?.chain.scanKey}:</b>  ${item?.contractAddress}`,
+      )
+      .join('')}
+    
+    <b>池子 Liquidity / 市值 MarketCap:</b> $${Intl.NumberFormat(
+      undefined,
+    ).format(+resultCoin?.liquidityUsd || 0)} / $${Intl.NumberFormat(
+      undefined,
+    ).format(+resultCoin?.marketCap || 0)}
+    
+    <a href="https://CNCrypto.io/"><b>CNCrypto.io:</b></a>
+    <a href="https://t.me/cncrypto_io">Channel</a> | <a href="https://t.me/cncrypto_listing">Group</a> | <a href="https://twitter.com/cncrypto_io">Twitter</a>
+    
+    `;
+
+    botTelegram.sendMessage('-1001586745481', message, opts);
 
     return { data: coin };
   }
