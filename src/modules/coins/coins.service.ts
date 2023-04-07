@@ -24,7 +24,6 @@ import { ResponseCoinDto } from './dtos/response-coin.dto';
 import { UpdateCoinDto } from './dtos/update-coin.dto';
 import { VoteCoinDto } from './dtos/vote-coin.dto';
 import TelegramBot from 'node-telegram-bot-api';
-import { pipeline } from 'stream';
 
 @Injectable()
 export class CoinsService {
