@@ -24,6 +24,7 @@ import { ResponseCoinDto } from './dtos/response-coin.dto';
 import { UpdateCoinDto } from './dtos/update-coin.dto';
 import { VoteCoinDto } from './dtos/vote-coin.dto';
 import TelegramBot from 'node-telegram-bot-api';
+import { pipeline } from 'stream';
 
 @Injectable()
 export class CoinsService {
@@ -123,7 +124,20 @@ export class CoinsService {
       for (const key in filter) {
         const matchField = {};
         for (const opKey in filter[key]) {
-          matchField['$' + opKey?.replace(/^\$/g, '')] = filter[key][opKey];
+          let value = filter[key][opKey];
+          const dateColumns = [
+            'whitelistAt',
+            'launchAt',
+            'presaleStartAt',
+            'presaleEndAt',
+            'approvedAt',
+            'createdAt',
+            'updatedAt',
+          ];
+          if (dateColumns.includes(key)) {
+            value = new Date(filter[key][opKey]);
+          }
+          matchField['$' + opKey?.replace(/^\$/g, '')] = value;
         }
         matchClause[key] = matchField;
       }
@@ -131,6 +145,7 @@ export class CoinsService {
         $match: matchClause,
       });
     }
+    console.log(pipeline);
 
     if (promoted === 'true') {
       const now = new Date().toISOString();
@@ -257,10 +272,25 @@ export class CoinsService {
   }
 
   async getCoinBySlug(slug) {
-    const coins = await this.coinModel.aggregate([
-      { $match: { slug } },
-      { $limit: 1 },
-    ]);
+    const pipeline = [];
+
+    pipeline.push({
+      $lookup: {
+        from: 'presale-platform',
+        localField: 'presalePlatform',
+        foreignField: '_id',
+        as: 'presalePlatform',
+      },
+    });
+    pipeline.push({
+      $addFields: {
+        presalePlatform: { $arrayElemAt: ['$presalePlatform', 0] },
+      },
+    });
+    pipeline.push({ $match: { slug } });
+    pipeline.push({ $limit: 1 });
+
+    const coins = await this.coinModel.aggregate(pipeline);
     const coin = coins?.[0] ? coins[0] : null;
 
     // add chain info to coin result
