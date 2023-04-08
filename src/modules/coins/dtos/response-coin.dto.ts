@@ -1,7 +1,8 @@
 import { STATUS } from '../coin.enum';
-import { Transform, Expose } from 'class-transformer';
+import { Transform, Expose, plainToClass } from 'class-transformer';
 import moment from 'moment';
 import { toPlainString, toShorten } from '@common/helpers/number.helper';
+import { ResponsePresalePlatformDto } from '@modules/presale-flatform/dtos/response-presale-platform';
 
 export class ResponseCoinDto {
   @Transform((value) => value?.obj?._id?.toString())
@@ -43,7 +44,13 @@ export class ResponseCoinDto {
 
   presaleLink: string = null;
 
-  presalePlatform: string = null;
+  @Transform(({ obj }) =>
+    obj?.presalePlatform
+      ? plainToClass(ResponsePresalePlatformDto, obj?.presalePlatform)
+      : null,
+  )
+  @Expose()
+  presalePlatform: ResponsePresalePlatformDto | null;
 
   presaleAt: Date = null;
 

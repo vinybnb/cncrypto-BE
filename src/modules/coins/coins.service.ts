@@ -417,6 +417,8 @@ export class CoinsService {
       dto.links = await Promise.all(linksWIthSocialCountPromise);
     }
 
+    console.log(dto);
+
     await this.coinModel.updateOne({ _id: dto._id }, dto);
 
     return { result: 'success' };
