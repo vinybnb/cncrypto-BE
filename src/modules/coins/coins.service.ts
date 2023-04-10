@@ -482,9 +482,9 @@ export class CoinsService {
 
     const message = `
     
-    <b>⚡️ 月兔极速上币 - CNCrypto Express Listing - BSC</b>
+<b>⚡️ 月兔极速上币 - CNCrypto Express Listing - BSC</b>
     
-    <b>代币 Coin:</b> <a href="https://CNCrypto.io/coins/${resultCoin?.slug}">${
+<b>代币 Coin:</b> <a href="https://CNCrypto.io/coins/${resultCoin?.slug}">${
       resultCoin?.name
     }</a>${
       resultCoin?.links?.find((item) => item?.name?.includes('TELEGRAM')) &&
@@ -494,21 +494,20 @@ export class CoinsService {
       }"><b>电报群 Telegram (英):</b></a>`
     }
     
-    ${resultCoin?.chains
-      ?.map(
-        (item) =>
-          `<b>合约 Contract ${item?.chain.scanKey}:</b>  ${item?.contractAddress}`,
-      )
-      .join('')}
+${resultCoin?.chains
+  ?.map(
+    (item) =>
+      `<b>合约 Contract ${item?.chain.scanKey}:</b>  ${item?.contractAddress}`,
+  )
+  .join('')}
     
-    <b>池子 Liquidity / 市值 MarketCap:</b> $${Intl.NumberFormat(
-      undefined,
-    ).format(+resultCoin?.liquidityUsd || 0)} / $${Intl.NumberFormat(
-      undefined,
-    ).format(+resultCoin?.marketCap || 0)}
+<b>池子 Liquidity / 市值 MarketCap:</b> $${Intl.NumberFormat(undefined).format(
+      +resultCoin?.liquidityUsd || 0,
+    )} / $${Intl.NumberFormat(undefined).format(+resultCoin?.marketCap || 0)}
     
-    <a href="https://CNCrypto.io/"><b>CNCrypto.io:</b></a>
-    <a href="https://t.me/cncrypto_io">Channel</a> | <a href="https://t.me/cncrypto_listing">Group</a> | <a href="https://twitter.com/cncrypto_io">Twitter</a>
+我们提供的任何内容均不构成财务建议，纯属信息分享，请做好自己的考察并对自己的投资负责
+<a href="https://CNCrypto.io/"><b>CNCrypto.io:</b></a>
+<a href="https://t.me/cncrypto_io">Channel</a> | <a href="https://t.me/cncrypto_listing">Group</a> | <a href="https://twitter.com/cncrypto_io">Twitter</a>
     
     `;
 
