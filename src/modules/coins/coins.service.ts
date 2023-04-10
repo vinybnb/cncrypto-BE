@@ -484,7 +484,7 @@ export class CoinsService {
     
 <b>⚡️ 月兔极速上币 - CNCrypto Express Listing - BSC</b>
     
-<b>代币 Coin:</b> <a href="https://CNCrypto.io/coins/${resultCoin?.slug}">${
+<b>代币 Coin:</b> <a href="https://CNCrypto.io/coin/${resultCoin?.slug}">${
       resultCoin?.name
     }</a>${
       resultCoin?.links?.find((item) => item?.name?.includes('TELEGRAM')) &&
