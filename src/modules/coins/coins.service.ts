@@ -511,7 +511,7 @@ ${resultCoin?.chains
     
     `;
 
-    botTelegram.sendPhoto('-1001586745481', resultCoin?.logo, {
+    botTelegram.sendPhoto('-1001843683844', resultCoin?.logo, {
       caption: message,
       parse_mode: 'HTML',
     });
