@@ -512,7 +512,10 @@ export class CoinsService {
     
     `;
 
-    botTelegram.sendMessage('-1001586745481', message, opts);
+    botTelegram.sendPhoto('-1001586745481', resultCoin?.logo, {
+      caption: message,
+      parse_mode: 'HTML',
+    });
 
     return { data: coin };
   }
