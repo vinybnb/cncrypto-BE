@@ -482,7 +482,7 @@ export class CoinsService {
 
     const message = `
     
-<b>⚡️  <a href="https://CNCrypto.io">CNCrypto.io</a> ——通知上市 | <a href="https://CNCrypto.io">CNCrypto.io</a> Listing Alert - BSC
+<b>⚡️ <a href="https://CNCrypto.io">CNCrypto.io</a> ——通知上市 | <a href="https://CNCrypto.io">CNCrypto.io</a> Listing Alert - BSC
 </b>
     
 <b>代币 Coin:</b> <a href="https://CNCrypto.io/coin/${resultCoin?.slug}">${
@@ -501,13 +501,14 @@ ${resultCoin?.chains
   )
   .join('')}
     
-  <b>图表 Chart:</b> <a href="https://CNCrypto.io/coin/${
-    resultCoin?.slug
-  }">https://CNCrypto.io/coin/${resultCoin?.slug}</a>
+<b>图表 Chart:</b> <a href="https://CNCrypto.io/coin/${
+      resultCoin?.slug
+    }">https://CNCrypto.io/coin/${resultCoin?.slug}</a>
 
 <a href="https://CNCrypto.io/"><b>CNCrypto.io:</b></a>
 <a href="https://t.me/cncrypto_io">Channel</a> | <a href="https://t.me/cncrypto_listing">Group</a> | <a href="https://twitter.com/cncrypto_io">Twitter</a>
-    
+   
+<a href="https://cncrypto.io/privacy-policy">免责声明</a>
     `;
 
     botTelegram.sendPhoto('-1001843683844', resultCoin?.logo, {
