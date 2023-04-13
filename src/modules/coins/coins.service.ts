@@ -482,16 +482,16 @@ export class CoinsService {
 
     const message = `
     
-<b>⚡️ 月兔极速上币 - CNCrypto Express Listing - BSC</b>
+<b>⚡️  <a href="https://CNCrypto.io">CNCrypto.io</a> ——通知上市 | <a href="https://CNCrypto.io">CNCrypto.io</a> Listing Alert - BSC
+</b>
     
 <b>代币 Coin:</b> <a href="https://CNCrypto.io/coin/${resultCoin?.slug}">${
       resultCoin?.name
     }</a>${
       resultCoin?.links?.find((item) => item?.name?.includes('TELEGRAM')) &&
       ` | <a href="${
-        resultCoin?.links?.find((item) => item?.name?.includes('TELEGRAM'))
-          .socialCount
-      }"><b>电报群 Telegram (英):</b></a>`
+        resultCoin?.links?.find((item) => item?.name?.includes('TELEGRAM')).link
+      }"><b>电报群 Telegram (英) </b></a>`
     }
     
 ${resultCoin?.chains
@@ -501,11 +501,10 @@ ${resultCoin?.chains
   )
   .join('')}
     
-<b>池子 Liquidity / 市值 MarketCap:</b> $${Intl.NumberFormat(undefined).format(
-      +resultCoin?.liquidityUsd || 0,
-    )} / $${Intl.NumberFormat(undefined).format(+resultCoin?.marketCap || 0)}
-    
-我们提供的任何内容均不构成财务建议，纯属信息分享，请做好自己的考察并对自己的投资负责
+  <b>图表 Chart:</b> <a href="https://CNCrypto.io/coin/${
+    resultCoin?.slug
+  }">https://CNCrypto.io/coin/${resultCoin?.slug}</a>
+
 <a href="https://CNCrypto.io/"><b>CNCrypto.io:</b></a>
 <a href="https://t.me/cncrypto_io">Channel</a> | <a href="https://t.me/cncrypto_listing">Group</a> | <a href="https://twitter.com/cncrypto_io">Twitter</a>
     
