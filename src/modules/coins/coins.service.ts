@@ -525,11 +525,9 @@ ${resultCoin?.chains
                 resultCoin?.links?.find((item) =>
                   item?.name?.includes('TWITTER'),
                 ) &&
-                `${
-                  resultCoin?.links?.find((item) =>
-                    item?.name?.includes('TWITTER'),
-                  ).link
-                }`
+                `${resultCoin?.links
+                  ?.find((item) => item?.name?.includes('TWITTER'))
+                  .link.replace('https://twitter.com/', '')}`
               }%20at%20https://cncrypto.io/coin/${
                 resultCoin?.slug
               }%20%2C%20the%20most%20powerful%20Chinese%20coin%20index%20platform%21%21%0A%0ALets%20take%20it%20to%20the%20moon%21%F0%9F%8C%95%20%0A%0A&hashtags=${
