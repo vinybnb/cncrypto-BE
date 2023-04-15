@@ -515,7 +515,7 @@ ${resultCoin?.chains
       caption: message,
       parse_mode: 'HTML',
       reply_markup: {
-        keyboard: [
+        inline_keyboard: [
           [
             {
               text: '🚀 CX/Shill',
