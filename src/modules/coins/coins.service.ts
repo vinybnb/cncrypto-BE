@@ -493,7 +493,7 @@ export class CoinsService {
         resultCoin?.links?.find((item) => item?.name?.includes('TELEGRAM')).link
       }"><b>电报群 Telegram (英) </b></a>`
     }
-    
+   
 ${resultCoin?.chains
   ?.map(
     (item) =>
@@ -514,6 +514,29 @@ ${resultCoin?.chains
     botTelegram.sendPhoto('-1001843683844', resultCoin?.logo, {
       caption: message,
       parse_mode: 'HTML',
+      reply_markup: {
+        keyboard: [
+          [
+            {
+              text: '🚀 CX/Shill',
+              url: `https://twitter.com/intent/tweet?via=cncrypto_io&text=%F0%9F%91%91%20Vote%20for%${
+                resultCoin?.slug
+              }%20%40${
+                resultCoin?.links?.find((item) =>
+                  item?.name?.includes('TWITTER'),
+                ) &&
+                `${
+                  resultCoin?.links?.find((item) =>
+                    item?.name?.includes('TWITTER'),
+                  ).link
+                }`
+              }%20at%20https://cncrypto.io/coin/jerry-inu%20%2C%20the%20most%20powerful%20Chinese%20coin%20index%20platform%21%21%0A%0ALets%20take%20it%20to%20the%20moon%21%F0%9F%8C%95%20%0A%0A&hashtags=${
+                resultCoin.name
+              },crypto,memecoin,CNCrypto`,
+            },
+          ],
+        ],
+      },
     });
 
     return { data: coin };
