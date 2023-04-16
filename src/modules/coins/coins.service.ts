@@ -427,37 +427,62 @@ export class CoinsService {
 
     const message = `
     
-    <b>⚡️ 月兔极速上币 - CNCrypto Express Listing - BSC</b>
+<b>⚡️ <a href="https://CNCrypto.io">CNCrypto.io</a> ——通知上市 | <a href="https://CNCrypto.io">CNCrypto.io</a> Listing Alert - BSC
+</b>
     
-    <b>代币 Coin:</b> <a href="https://CNCrypto.io/coins/${resultCoin?.slug}">${
+<b>代币 Coin:</b> <a href="https://CNCrypto.io/coin/${resultCoin?.slug}">${
       resultCoin?.name
     }</a>${
       resultCoin?.links?.find((item) => item?.name?.includes('TELEGRAM')) &&
       ` | <a href="${
-        resultCoin?.links?.find((item) => item?.name?.includes('TELEGRAM'))
-          .socialCount
-      }"><b>电报群 Telegram (英):</b></a>`
+        resultCoin?.links?.find((item) => item?.name?.includes('TELEGRAM')).link
+      }"><b>电报群 Telegram (英) </b></a>`
     }
+   
+${resultCoin?.chains
+  ?.map(
+    (item) =>
+      `<b>合约 Contract ${item?.chain.scanKey}:</b>  ${item?.contractAddress}`,
+  )
+  .join('')}
     
-    ${resultCoin?.chains
-      ?.map(
-        (item) =>
-          `<b>合约 Contract ${item?.chain.scanKey}:</b>  ${item?.contractAddress}`,
-      )
-      .join('')}
-    
-    <b>池子 Liquidity / 市值 MarketCap:</b> $${Intl.NumberFormat(
-      undefined,
-    ).format(+resultCoin?.liquidityUsd || 0)} / $${Intl.NumberFormat(
-      undefined,
-    ).format(+resultCoin?.marketCap || 0)}
-    
-    <a href="https://CNCrypto.io/"><b>CNCrypto.io:</b></a>
-    <a href="https://t.me/cncrypto_io">Channel</a> | <a href="https://t.me/cncrypto_listing">Group</a> | <a href="https://twitter.com/cncrypto_io">Twitter</a>
-    
+<b>图表 Chart:</b> <a href="https://CNCrypto.io/coin/${
+      resultCoin?.slug
+    }">https://CNCrypto.io/coin/${resultCoin?.slug}</a>
+
+<a href="https://CNCrypto.io/"><b>CNCrypto.io:</b></a>
+<a href="https://t.me/cncrypto_io">Channel</a> | <a href="https://t.me/cncrypto_listing">Group</a> | <a href="https://twitter.com/cncrypto_io">Twitter</a>
+   
+<a href="https://cncrypto.io/privacy-policy">免责声明</a>
     `;
 
-    botTelegram.sendMessage('-1001586745481', message, opts);
+    botTelegram.sendPhoto('-1001843683844', resultCoin?.logo, {
+      caption: message,
+      parse_mode: 'HTML',
+      reply_markup: {
+        inline_keyboard: [
+          [
+            {
+              text: '🚀 CX/Shill',
+              url: `https://twitter.com/intent/tweet?via=cncrypto_io&text=%F0%9F%91%91%20Vote%20for%20${
+                resultCoin?.name
+              }%20%40${
+                resultCoin?.links?.find((item) =>
+                  item?.name?.includes('TWITTER'),
+                ) &&
+                `${resultCoin?.links
+                  ?.find((item) => item?.name?.includes('TWITTER'))
+                  .link.replace('https://twitter.com/', '')}`
+              }%20at%20https://cncrypto.io/coin/${
+                resultCoin?.slug
+              }%20%2C%20the%20most%20powerful%20Chinese%20coin%20index%20platform%21%21%0A%0ALets%20take%20it%20to%20the%20moon%21%F0%9F%8C%95%20%0A%0A&hashtags=${
+                resultCoin.name
+              },crypto,memecoin,CNCrypto`,
+            },
+          ],
+        ],
+      },
+    });
 
     return { data: coin };
   }
