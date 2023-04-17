@@ -535,6 +535,12 @@ ${resultCoin?.chains
               },crypto,memecoin,CNCrypto`,
             },
           ],
+          [
+            {
+              text: '🗳️ Vote',
+              url: `https://CNCrypto.io/coin/${resultCoin?.slug}`,
+            },
+          ],
         ],
       },
     });
