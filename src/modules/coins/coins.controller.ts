@@ -21,7 +21,7 @@ import { CreateCoinDto } from './dtos/create-coin.dto';
 import { CoinSlugDto } from './dtos/coin-slug.dto';
 import { FilterCoinDto } from './dtos/filter-coin.dto';
 import { VoteCoinDto } from './dtos/vote-coin.dto';
-import { Put } from '@nestjs/common/decorators';
+import { HttpCode, Put } from '@nestjs/common/decorators';
 import { UpdateCoinDto } from './dtos/update-coin.dto';
 
 @ApiTags('Coins')
@@ -35,13 +35,6 @@ export class CoinsController {
   @ApiConsumes('application/x-www-form-urlencoded')
   async getAllCoin(@Query() query: FilterCoinDto) {
     return await this.coinService.findAll(query);
-  }
-
-  @Get('/trending')
-  @UsePipes(new ValidationPipe({ transform: true }))
-  @ApiConsumes('application/x-www-form-urlencoded')
-  async getTrendingCoins(@Query() query: FilterCoinDto) {
-    return await this.coinService.getTrendingCoins(query);
   }
 
   @Get('/detail')
@@ -88,5 +81,11 @@ export class CoinsController {
   @Roles(ROLE.ADMIN)
   unapprovedCoin(@Body() body: CoinSlugDto) {
     return this.coinService.unApproveCoin(body.slug);
+  }
+
+  @Post('/check')
+  @HttpCode(200)
+  checkCoinExist(@Body() body: CreateCoinDto) {
+    return this.coinService.checkCoinExist(body);
   }
 }

@@ -144,7 +144,6 @@ export class CoinsService {
         $match: matchClause,
       });
     }
-    console.log(pipeline);
 
     if (promoted === 'true') {
       const now = new Date().toISOString();
@@ -203,73 +202,6 @@ export class CoinsService {
     };
   }
 
-  async getTrendingCoins(filter: FilterCoinDto) {
-    const { chainId, search = '', page = 1, pageSize = 10 } = filter;
-
-    const pipeline: PipelineStage[] = [];
-
-    if (search) {
-      pipeline.push({
-        $match: {
-          $or: [
-            { name: { $regex: search, $options: 'gi' } },
-            { symbol: { $regex: search, $options: 'gi' } },
-            { contractAddress: { $regex: search, $options: 'gi' } },
-          ],
-        },
-      });
-    }
-
-    if (chainId && chainId !== -1) {
-      pipeline.push({
-        $match: { chains: { $elemMatch: { chainId: +chainId } } },
-      });
-    }
-    pipeline.push({
-      $sort: { liquidityUsd: -1 },
-    });
-
-    // const trendingCoins = await this.coinModel
-    //   .find({ approvedAt: { $ne: null } })
-    //   .sort({
-    //     change24h: -1,
-    //     liquidityUsd: -1,
-    //     change6h: -1,
-    //     volume24h: -1,
-    //   })
-    //   .limit(50);
-
-    const coins = await this.coinModel.aggregate(pipeline);
-    const validCoins = coins.filter(
-      (item) => +item?.volume24h > 0 && +item?.liquidityUsd > 0,
-    );
-    const sortedCoins = validCoins.sort(
-      (a, b) =>
-        b.volume24h / (b.liquidityUsd || 1) -
-        a.volume24h / (a.liquidityUsd || 1),
-    );
-    const trendingCoins = sortedCoins.slice(
-      (page - 1) * pageSize,
-      page * pageSize,
-    );
-
-    const objChains = await this.chainService.getObjectByChainId();
-    const resultCoins = trendingCoins.map((item) => ({
-      ...item,
-      chains: item?.chains.map((chain) => ({
-        ...chain,
-        chain: objChains[chain.chainId],
-      })),
-    }));
-
-    return {
-      currentPage: +page,
-      totalPage: Math.ceil(validCoins?.length / pageSize),
-      totalItem: validCoins?.length,
-      data: resultCoins.map((item) => plainToClass(ResponseCoinDto, item)),
-    };
-  }
-
   async getCoinBySlug(slug) {
     const pipeline = [];
 
@@ -308,6 +240,15 @@ export class CoinsService {
 
   async create(dto: CreateCoinDto) {
     // const maxIdCoin = await this.coinRepo
+
+    const check = await this.checkCoinExist(dto);
+
+    if (check.isExist) {
+      throw new BadRequestException(
+        `contract address is exist in ${check?.data?.slug}`,
+      );
+    }
+
     const maxIdCoin = await this.coinModel.findOne({}).sort({ id: -1 });
 
     dto.id = (+maxIdCoin?.id || 0) + 1;
@@ -417,8 +358,6 @@ export class CoinsService {
       dto.links = await Promise.all(linksWIthSocialCountPromise);
     }
 
-    console.log(dto);
-
     await this.coinModel.updateOne({ _id: dto._id }, dto);
 
     return { result: 'success' };
@@ -433,6 +372,21 @@ export class CoinsService {
   async deleteCoinBySlug(slug: string) {
     await this.coinModel.deleteOne({ slug: slug });
     return { result: 'success' };
+  }
+
+  async checkCoinExist(dto: CreateCoinDto) {
+    const findClause = [];
+
+    for (const chain of dto.chains) {
+      findClause.push({
+        'chains.chainId': chain.chainId,
+        'chains.contractAddress': chain.contractAddress,
+      });
+    }
+
+    const coin = await this.coinModel.findOne({ $or: findClause });
+
+    return { isExist: !!coin, data: coin };
   }
 
   async upVote(dto: VoteCoinDto) {
@@ -601,7 +555,6 @@ ${resultCoin?.chains
       )
       .pipe(map((res) => res.data));
     const data = await lastValueFrom(http);
-    console.log(data);
     return data?.data?.public_metrics?.followers_count || 0;
   }
 }
