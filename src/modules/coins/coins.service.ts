@@ -240,6 +240,15 @@ export class CoinsService {
 
   async create(dto: CreateCoinDto) {
     // const maxIdCoin = await this.coinRepo
+
+    const check = await this.checkCoinExist(dto);
+
+    if (check.isExist) {
+      throw new BadRequestException(
+        `contract address is exist in ${check?.data?.slug}`,
+      );
+    }
+
     const maxIdCoin = await this.coinModel.findOne({}).sort({ id: -1 });
 
     dto.id = (+maxIdCoin?.id || 0) + 1;
