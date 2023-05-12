@@ -50,7 +50,7 @@ export class UpdateCoinDto {
 
   @IsUrl()
   @IsNullable()
-  logo: string = null;
+  logo: string;
 
   @IsArray()
   @IsNullable()
@@ -58,19 +58,19 @@ export class UpdateCoinDto {
 
   @IsString()
   @IsNullable()
-  listingType: string = null;
+  listingType: string;
 
   @IsString()
   @IsNullable()
-  description: string = null;
+  description: string;
 
   @IsString()
   @IsNullable()
-  descriptionCn: string = null;
+  descriptionCn: string;
 
   // @IsEnum(STATUS)
   @IsNullable()
-  status: STATUS = null;
+  status: STATUS;
 
   @IsBoolean()
   @IsNullable()
@@ -78,35 +78,35 @@ export class UpdateCoinDto {
 
   @IsString()
   @IsNullable()
-  whitelistLink: string = null;
+  whitelistLink: string;
 
   @IsDateString()
   @IsNullable()
-  whitelistAt: Date = null;
+  whitelistAt: Date;
 
   @IsDateString()
   @IsNullable()
-  launchAt: Date = null;
+  launchAt: Date;
 
   @IsString()
   @IsNullable()
-  presaleLink: string = null;
+  presaleLink: string;
 
   @IsString()
   @IsNullable()
-  presalePlatform: string = null;
+  presalePlatform: string;
 
   @IsDateString()
   @IsNullable()
-  presaleStartAt: Date = null;
+  presaleStartAt: Date;
 
   @IsDateString()
   @IsNullable()
-  presaleEndAt: Date = null;
+  presaleEndAt: Date;
 
   @IsDateString()
   @IsNullable()
-  approvedAt: Date = null;
+  approvedAt: Date;
 
   @IsNumber()
   @IsNullable()
