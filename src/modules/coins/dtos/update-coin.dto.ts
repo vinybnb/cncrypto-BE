@@ -2,6 +2,7 @@ import { IsNullable } from '@common/decorators/validator.decorator';
 import { Transform } from 'class-transformer';
 import {
   IsArray,
+  IsBoolean,
   IsDateString,
   IsNotEmpty,
   IsNumber,
@@ -70,6 +71,10 @@ export class UpdateCoinDto {
   // @IsEnum(STATUS)
   @IsNullable()
   status: STATUS = null;
+
+  @IsBoolean()
+  @IsNullable()
+  premium: boolean;
 
   @IsString()
   @IsNullable()

@@ -24,6 +24,8 @@ export class ResponseCoinDto {
 
   status: STATUS = STATUS.APPROVING;
 
+  premium: boolean;
+
   whitelistLink: string = null;
 
   whitelistAt: Date = null;

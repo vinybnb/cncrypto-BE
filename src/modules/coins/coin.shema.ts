@@ -48,6 +48,9 @@ export class Coin {
   @Prop({ default: STATUS.APPROVING })
   status: STATUS;
 
+  @Prop({ default: false })
+  premium: boolean;
+
   @Prop({ default: null })
   whitelistLink: string;
 

@@ -5,6 +5,7 @@ import {
   IsNumber,
   IsUrl,
   IsDateString,
+  IsBoolean,
 } from 'class-validator';
 import { IsNullable } from '@common/decorators/validator.decorator';
 import { STATUS } from '../coin.enum';
@@ -65,6 +66,10 @@ export class CreateCoinDto {
   @IsEnum(STATUS)
   @IsNullable()
   status: STATUS = STATUS.APPROVING;
+
+  @IsBoolean()
+  @IsNullable()
+  premium: boolean;
 
   @IsString()
   @IsNullable()
