@@ -104,7 +104,7 @@ export class PromoteBannerService {
       { _id: dto._id },
       { imageUrl: url },
     );
-    return { result: 'success' };
+    return { result: 'success', url: url };
   }
 
   async deletePromoteBanner(dto: PromoteBannerIdDto) {
