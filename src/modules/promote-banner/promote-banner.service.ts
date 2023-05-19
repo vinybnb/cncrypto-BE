@@ -1,10 +1,6 @@
 import { uuidV4 } from '@common/helpers/string.helper';
 import { PUBLIC_DIR, PUBLIC_URL } from '@configs/app';
-import {
-  BadRequestException,
-  Injectable,
-  PayloadTooLargeException,
-} from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import fs from 'fs';
 import { Model, PipelineStage } from 'mongoose';
@@ -79,7 +75,7 @@ export class PromoteBannerService {
     const LIMIT_FILE_SIZE = 10 * 1024 * 1024;
 
     if (fileLogo?.size > LIMIT_FILE_SIZE) {
-      throw new PayloadTooLargeException('Image size must less than 10MB');
+      throw new BadRequestException('Image size must less than 10MB');
     }
     if (!fileLogo?.mimetype?.startsWith('image')) {
       throw new BadRequestException('File must be image');
