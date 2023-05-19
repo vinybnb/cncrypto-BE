@@ -1,5 +1,5 @@
 import { IsNullable } from '@common/decorators/validator.decorator';
-import { IsDateString, IsString, IsUrl } from 'class-validator';
+import { IsDateString, IsString } from 'class-validator';
 
 export class UpdatePromoteBannerDto {
   @IsString()
@@ -9,7 +9,7 @@ export class UpdatePromoteBannerDto {
   @IsNullable()
   link: string;
 
-  @IsUrl()
+  @IsString()
   @IsNullable()
   imageUrl: string;
 

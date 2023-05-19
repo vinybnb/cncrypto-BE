@@ -1,10 +1,12 @@
-import { IsDateString, IsString, IsUrl } from 'class-validator';
+import { IsNullable } from '@common/decorators/validator.decorator';
+import { IsDateString, IsString } from 'class-validator';
 
 export class CreatePromoteBannerDto {
   @IsString()
   link: string;
 
-  @IsUrl()
+  @IsString()
+  @IsNullable()
   imageUrl: string;
 
   @IsDateString()
