@@ -95,12 +95,14 @@ export class PromoteBannerService {
     fs.writeFileSync(filePath, fileLogo.buffer);
     const url = `${PUBLIC_URL}/promotion-banner/` + fileName;
     const banner = await this.promoteBannerModel.findById(dto._id);
-    const oldPath = path.join(
-      PUBLIC_DIR,
-      banner?.imageUrl?.replace(PUBLIC_URL, ''),
-    );
-    if (fs.existsSync(oldPath)) {
-      fs.unlinkSync(oldPath);
+    if (!!banner?.imageUrl) {
+      const oldPath = path.join(
+        PUBLIC_DIR,
+        banner?.imageUrl?.replace(PUBLIC_URL, ''),
+      );
+      if (fs.existsSync(oldPath)) {
+        fs.unlinkSync(oldPath);
+      }
     }
     await this.promoteBannerModel.updateMany(
       { _id: dto._id },
@@ -111,12 +113,14 @@ export class PromoteBannerService {
 
   async deletePromoteBanner(dto: PromoteBannerIdDto) {
     const banner = await this.promoteBannerModel.findById(dto._id);
-    const oldPath = path.join(
-      PUBLIC_DIR,
-      banner?.imageUrl?.replace(PUBLIC_URL, ''),
-    );
-    if (fs.existsSync(oldPath)) {
-      fs.unlinkSync(oldPath);
+    if (!!banner?.imageUrl) {
+      const oldPath = path.join(
+        PUBLIC_DIR,
+        banner?.imageUrl?.replace(PUBLIC_URL, ''),
+      );
+      if (fs.existsSync(oldPath)) {
+        fs.unlinkSync(oldPath);
+      }
     }
     await this.promoteBannerModel.deleteOne({ _id: dto._id });
     return { result: 'success' };

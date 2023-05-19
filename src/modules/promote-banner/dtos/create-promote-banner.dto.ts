@@ -3,11 +3,11 @@ import { IsDateString, IsString } from 'class-validator';
 
 export class CreatePromoteBannerDto {
   @IsString()
-  link: string;
+  link = '';
 
   @IsString()
   @IsNullable()
-  imageUrl: string;
+  imageUrl = '';
 
   @IsDateString()
   expiredAt: string;
