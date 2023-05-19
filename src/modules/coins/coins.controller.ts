@@ -7,6 +7,7 @@ import {
   UsePipes,
   ValidationPipe,
   Delete,
+  UploadedFile,
 } from '@nestjs/common';
 import { Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiConsumes, ApiTags } from '@nestjs/swagger';
@@ -21,8 +22,10 @@ import { CreateCoinDto } from './dtos/create-coin.dto';
 import { CoinSlugDto } from './dtos/coin-slug.dto';
 import { FilterCoinDto } from './dtos/filter-coin.dto';
 import { VoteCoinDto } from './dtos/vote-coin.dto';
-import { HttpCode, Put } from '@nestjs/common/decorators';
+import { HttpCode, Put, UseInterceptors } from '@nestjs/common/decorators';
 import { UpdateCoinDto } from './dtos/update-coin.dto';
+import { UpdateImageCoinDto } from './dtos/update-image-coin.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @ApiTags('Coins')
 @ApiBearerAuth()
@@ -32,7 +35,6 @@ export class CoinsController {
 
   @Get('/get-all')
   @UsePipes(new ValidationPipe({ transform: true }))
-  @ApiConsumes('application/x-www-form-urlencoded')
   async getAllCoin(@Query() query: FilterCoinDto) {
     return await this.coinService.findAll(query);
   }
@@ -53,6 +55,17 @@ export class CoinsController {
   @UsePipes(new ValidationPipe({ transform: true }))
   UpdateCoin(@Body() body: UpdateCoinDto) {
     return this.coinService.update(body);
+  }
+
+  @Put('/update-image')
+  @ApiConsumes('multipart/form-data')
+  @UsePipes(new ValidationPipe({ transform: true }))
+  @UseInterceptors(FileInterceptor('logo'))
+  UpdateImage(
+    @Body() body: UpdateImageCoinDto,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    return this.coinService.updateImage(body, file);
   }
 
   @Delete('/delete')

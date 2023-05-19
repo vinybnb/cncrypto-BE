@@ -1,9 +1,14 @@
+import { uuidV4 } from '@common/helpers/string.helper';
+import { PUBLIC_DIR, PUBLIC_URL } from '@configs/app';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import fs from 'fs';
 import { Model, PipelineStage } from 'mongoose';
+import path from 'path';
 import { CreatePromoteBannerDto } from './dtos/create-promote-banner.dto';
 import { FilterPromoteBannerDto } from './dtos/filter-promote-banner.dto';
 import { PromoteBannerIdDto } from './dtos/promote-banner-id.dto';
+import { UpdateImagePromoteBannerDto } from './dtos/update-image-promote-banner.dto';
 import { UpdatePromoteBannerDto } from './dtos/update-promote-banner.dto';
 import { PromoteBanner, PromoteBannerDocument } from './promote-banner.shema';
 
@@ -63,7 +68,43 @@ export class PromoteBannerService {
     return { result: 'success' };
   }
 
+  async updateImage(
+    dto: UpdateImagePromoteBannerDto,
+    fileLogo: Express.Multer.File,
+  ) {
+    if (!fs.existsSync(path.join(PUBLIC_DIR, 'promotion-banner'))) {
+      fs.mkdirSync(path.join(PUBLIC_DIR, 'promotion-banner'), {
+        recursive: true,
+      });
+    }
+    const fileName = uuidV4() + '_' + fileLogo.originalname;
+    const filePath = path.join(PUBLIC_DIR, 'promotion-banner', fileName);
+    fs.writeFileSync(filePath, fileLogo.buffer);
+    const url = `${PUBLIC_URL}/promotion-banner/` + fileName;
+    const banner = await this.promoteBannerModel.findById(dto._id);
+    const oldPath = path.join(
+      PUBLIC_DIR,
+      banner?.imageUrl?.replace(PUBLIC_URL, ''),
+    );
+    if (fs.existsSync(oldPath)) {
+      fs.unlinkSync(oldPath);
+    }
+    await this.promoteBannerModel.updateMany(
+      { _id: dto._id },
+      { imageUrl: url },
+    );
+    return { result: 'success' };
+  }
+
   async deletePromoteBanner(dto: PromoteBannerIdDto) {
+    const banner = await this.promoteBannerModel.findById(dto._id);
+    const oldPath = path.join(
+      PUBLIC_DIR,
+      banner?.imageUrl?.replace(PUBLIC_URL, ''),
+    );
+    if (fs.existsSync(oldPath)) {
+      fs.unlinkSync(oldPath);
+    }
     await this.promoteBannerModel.deleteOne({ _id: dto._id });
     return { result: 'success' };
   }

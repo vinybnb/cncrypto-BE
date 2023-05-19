@@ -24,6 +24,7 @@ import { ResponseCoinDto } from './dtos/response-coin.dto';
 import { UpdateCoinDto } from './dtos/update-coin.dto';
 import { VoteCoinDto } from './dtos/vote-coin.dto';
 import TelegramBot from 'node-telegram-bot-api';
+import { UpdateImageCoinDto } from './dtos/update-image-coin.dto';
 
 @Injectable()
 export class CoinsService {
@@ -360,6 +361,11 @@ export class CoinsService {
 
     await this.coinModel.updateOne({ _id: dto._id }, dto);
 
+    return { result: 'success' };
+  }
+
+  async updateImage(dto: UpdateImageCoinDto, fileLogo: Express.Multer.File) {
+    console.log(dto, fileLogo);
     return { result: 'success' };
   }
 

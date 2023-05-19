@@ -16,6 +16,8 @@ import { PromotedModule } from '@modules/promoted-list/promoted-list.module';
 import { UsersModule } from '@modules/users/users.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { PresalePlatformModule } from '@modules/presale-flatform/presale-platform.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -24,9 +26,10 @@ import { PresalePlatformModule } from '@modules/presale-flatform/presale-platfor
       ttl: 60,
       limit: 10,
     }),
-    // ServeStaticModule.forRoot({
-    //   rootPath: join(__dirname, 'public'),
-    // }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, 'public'),
+      serveRoot: '/public/',
+    }),
     CoinsModule,
     CoinsModule,
     UsersModule,

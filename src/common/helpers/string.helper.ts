@@ -1,4 +1,4 @@
-export function generateUUID() {
+export function uuidV4() {
   const pattern = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx';
   const hexDigits = '0123456789abcdef';
   const allowY = '89ab';

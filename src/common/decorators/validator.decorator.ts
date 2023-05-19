@@ -7,6 +7,7 @@ import {
 
 interface IsFileOptions {
   mimeType?: string[];
+  maxSize?: number;
 }
 
 export function IsFile(
@@ -25,8 +26,6 @@ export function IsFile(
           if (options?.mimeType) {
             for (const mimeType of options.mimeType) {
               const re = new RegExp(`^${mimeType?.replace('*', '.*')}$`, 'g');
-              console.log(`^${mimeType?.replace('*', '.*')}$`, value);
-              console.log(re.test(value?.mimeType));
               if (!re.test(value?.mimeType)) {
                 return false;
               }
