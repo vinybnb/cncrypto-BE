@@ -10,6 +10,7 @@ import {
 } from 'nest-winston';
 
 import { AppModule } from './app.module';
+import { json } from 'express';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -31,6 +32,7 @@ async function bootstrap() {
   app.enableCors();
   app.useGlobalPipes(new ValidationPipe());
   app.use(cookieParser());
+  app.use(json({ limit: '10mb' }));
 
   const swaggerConfig = new DocumentBuilder()
     .setTitle('API')
