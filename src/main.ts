@@ -2,15 +2,14 @@ import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import cookieParser from 'cookie-parser';
 
-import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
-import winston from 'winston';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import {
   utilities as nestWinstonModuleUtilities,
   WinstonModule,
 } from 'nest-winston';
+import winston from 'winston';
 
 import { AppModule } from './app.module';
-import { json } from 'express';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -32,7 +31,6 @@ async function bootstrap() {
   app.enableCors();
   app.useGlobalPipes(new ValidationPipe());
   app.use(cookieParser());
-  app.use(json({ limit: '10mb' }));
 
   const swaggerConfig = new DocumentBuilder()
     .setTitle('API')
