@@ -433,7 +433,7 @@ export class CoinsService {
       const tokenTelegramBot = '6134109204:AAHhiTQ-4hsJhTXZAc9s4gpQpz9qMlKSrvs';
 
       const botTelegram = new TelegramBot(tokenTelegramBot, {
-        polling: true,
+        // polling: true,
         parse_mode: 'Markdown',
       });
 
@@ -469,7 +469,8 @@ export class CoinsService {
         <a href="https://cncrypto.io/privacy-policy">免责声明</a>
       `;
 
-      botTelegram.sendPhoto('-1001843683844', resultCoin?.logo, {
+      const chatId = '-1001843683844';
+      botTelegram.sendPhoto(chatId, resultCoin?.logo, {
         caption: message,
         parse_mode: 'HTML',
         reply_markup: {
