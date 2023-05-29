@@ -503,6 +503,7 @@ export class CoinsService {
       });
     } else {
       botTelegram.sendMessage(chatId, message, {
+        parse_mode: 'HTML',
         reply_markup: {
           inline_keyboard: [
             [
