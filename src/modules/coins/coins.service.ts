@@ -439,7 +439,6 @@ export class CoinsService {
     const message = `
 <b>⚡️ <a href="https://CNCrypto.io">CNCrypto.io</a> ——通知上市 | <a href="https://CNCrypto.io">CNCrypto.io</a> Listing Alert - BSC
 </b>
-
 <b>代币 Coin:</b> <a href="https://CNCrypto.io/coin/${resultCoin?.slug}">${
       resultCoin?.name
     }</a>${
@@ -447,15 +446,12 @@ export class CoinsService {
       ` | <a href="${
         resultCoin?.links?.find((item) => item?.name?.includes('TELEGRAM')).link
       }"><b>电报群 Telegram (英) </b></a>`
-    }
-
-        ${resultCoin?.chains
-          ?.map(
-            (item) =>
-              `<b>合约 Contract ${item?.chain.scanKey}:</b>  ${item?.contractAddress}`,
-          )
-          .join('')}
-
+    }${resultCoin?.chains
+      ?.map(
+        (item) =>
+          `<b>合约 Contract ${item?.chain.scanKey}:</b>  ${item?.contractAddress}`,
+      )
+      .join('')}
 <b>图表 Chart:</b> <a href="https://CNCrypto.io/coin/${
       resultCoin?.slug
     }">https://CNCrypto.io/coin/${resultCoin?.slug}</a>
