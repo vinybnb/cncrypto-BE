@@ -93,9 +93,14 @@ export class CoinsService {
       pipeline.push({
         $match: {
           $or: [
-            { name: { $regex: search, $options: 'gi' } },
-            { symbol: { $regex: search, $options: 'gi' } },
-            { contractAddress: { $regex: search, $options: 'gi' } },
+            { name: { $regex: search, $options: 'i' } },
+            { symbol: { $regex: search, $options: 'i' } },
+            {
+              'chains.contractAddress': {
+                $regex: `^${search}$`,
+                $options: 'i',
+              },
+            },
           ],
         },
       });
