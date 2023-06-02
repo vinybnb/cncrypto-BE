@@ -443,7 +443,7 @@ export class CoinsService {
 
     const message = `
 <b>⚡️ <a href="https://CNCrypto.io">CNCrypto.io</a> ——通知上市 | <a href="https://CNCrypto.io">CNCrypto.io</a> Listing Alert${
-      resultCoin.premium && ' (Free)'
+      !resultCoin?.premium ? ' (Free)' : ''
     } - BSC
 </b>
 <b>代币 Coin:</b> <a href="https://CNCrypto.io/coin/${resultCoin?.slug}">${
