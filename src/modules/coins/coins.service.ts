@@ -325,7 +325,7 @@ export class CoinsService {
     delete dto.id;
     delete dto.slug;
 
-    for (const chain of dto.chains) {
+    for (const chain of dto.chains || []) {
       try {
         const tokenInfo = await this.getTokenInfo(chain.contractAddress);
         dto.price = tokenInfo?.priceUsd;
