@@ -2,12 +2,18 @@ import { IsNullable } from '@common/decorators/validator.decorator';
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import { IsBooleanString, IsEnum, IsNumber, IsString } from 'class-validator';
+import { BannerPlacement } from '../types/enum';
 
 export class FilterPromoteBannerDto {
   @IsBooleanString()
   @IsNullable()
   @ApiProperty({ required: false })
   unexpired: string;
+
+  @IsString()
+  @IsNullable()
+  @ApiProperty({ required: false })
+  placement: BannerPlacement;
 
   @IsString()
   @IsNullable()
