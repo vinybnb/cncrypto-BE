@@ -456,7 +456,9 @@ export class CoinsService {
     }${resultCoin?.chains
       ?.map(
         (item) =>
-          `<b>合约 Contract ${item?.chain.scanKey}:</b>  ${item?.contractAddress}`,
+          `\n<b>合约 Contract ${item?.chain.scanKey.toLocaleUpperCase()}:</b>  ${
+            item?.contractAddress
+          }`,
       )
       .join('')}
 <b>图表 Chart:</b> <a href="https://CNCrypto.io/coin/${
@@ -464,7 +466,7 @@ export class CoinsService {
     }">https://CNCrypto.io/coin/${resultCoin?.slug}</a>
 
 <a href="https://CNCrypto.io/"><b>CNCrypto.io:</b></a>
-<a href="https://t.me/cncrypto_io">Channel</a> | <a href="https://t.me/cncrypto_listing">Group</a> | <a href="https://twitter.com/cncrypto_io">Twitter</a>
+<a href="https://t.me/cncrypto_io">Channel</a> | <a href="https://t.me/cncrypto_chat">Group</a> | <a href="https://twitter.com/cncrypto_io">Twitter</a>
 
 <a href="https://cncrypto.io/privacy-policy">免责声明</a>
       `;
