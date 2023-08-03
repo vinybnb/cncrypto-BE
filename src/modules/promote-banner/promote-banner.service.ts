@@ -20,7 +20,14 @@ export class PromoteBannerService {
   ) {}
 
   async getAllPromoteBanner(dto: FilterPromoteBannerDto) {
-    const { unexpired, sortBy, sortDirection = 'desc', page, pageSize } = dto;
+    const {
+      unexpired,
+      placement,
+      sortBy,
+      sortDirection = 'desc',
+      page,
+      pageSize,
+    } = dto;
 
     const pipeline: PipelineStage[] = [];
 
@@ -30,6 +37,10 @@ export class PromoteBannerService {
 
     if (unexpired === 'true') {
       pipeline.push({ $match: { expiredAt: { $gte: new Date() } } });
+    }
+
+    if (!!placement) {
+      pipeline.push({ $match: { placement: placement } });
     }
 
     const countAggregate = await this.promoteBannerModel.aggregate([

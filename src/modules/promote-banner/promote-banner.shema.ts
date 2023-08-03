@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
+import { BannerPlacement } from './types/enum';
 
 @Schema({
   collection: 'promote-banner',
@@ -11,6 +12,9 @@ export class PromoteBanner {
 
   @Prop()
   imageUrl: string;
+
+  @Prop()
+  placement: BannerPlacement;
 
   @Prop()
   expiredAt: Date;

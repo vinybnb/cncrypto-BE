@@ -54,7 +54,7 @@ export class UpdateCoinDto {
 
   @IsArray()
   @IsNullable()
-  chains: UpdateCoinChainDto[] = [];
+  chains: UpdateCoinChainDto[];
 
   @IsString()
   @IsNullable()
@@ -108,63 +108,41 @@ export class UpdateCoinDto {
   @IsNullable()
   approvedAt: Date;
 
-  @IsNumber()
   @IsNullable()
-  @Transform(({ value }) => +value || 0)
-  totalVotes = 0;
+  totalVotes;
 
-  @IsNumber()
   @IsNullable()
-  @Transform(({ value }) => +value || 0)
-  price = 0;
+  price;
 
-  @IsNumber()
   @IsNullable()
-  @Transform(({ value }) => +value || 0)
-  marketCap = 0;
+  marketCap;
+
+  @IsNullable()
+  liquidityUsd;
 
   @IsNumber()
   @IsNullable()
-  @Transform(({ value }) => +value || 0)
-  liquidityUsd = 0;
+  change1h;
 
-  @IsNumber()
-  @Transform(({ value }) => +value || 0)
-  change1h = 0;
-
-  @IsNumber()
   @IsNullable()
-  @Transform(({ value }) => +value || 0)
-  change6h = 0;
+  change6h;
 
-  @IsNumber()
   @IsNullable()
-  @Transform(({ value }) => +value || 0)
-  change24h = 0;
+  change24h;
 
-  @IsNumber()
-  @Transform(({ value }) => +value || 0)
-  volume1h = 0;
+  volume1h;
 
-  @IsNumber()
   @IsNullable()
-  @Transform(({ value }) => +value || 0)
-  volume6h = 0;
+  volume6h;
 
-  @IsNumber()
   @IsNullable()
-  @Transform(({ value }) => +value || 0)
-  volume24h = 0;
+  volume24h;
 
-  @IsNumber()
   @IsNullable()
-  @Transform(({ value }) => +value || 0)
-  tnx6h = 0;
+  tnx6h;
 
-  @IsNumber()
   @IsNullable()
-  @Transform(({ value }) => +value || 0)
-  tnx24h = 0;
+  tnx24h;
 
   @IsArray()
   @IsNullable()
