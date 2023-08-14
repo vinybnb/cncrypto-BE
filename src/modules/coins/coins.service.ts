@@ -463,8 +463,8 @@ export class CoinsService {
       )
       .join('')}
 ${
-  resultCoin?.preSaleLink
-    ? `<b>买 Buy: </b> <a href="${resultCoin?.preSaleLink}">${resultCoin?.preSaleLink}</a>`
+  resultCoin?.presaleLink
+    ? `<b>买 Buy: </b> <a href="${resultCoin?.presaleLink}">${resultCoin?.presaleLink}</a>`
     : ``
 }
 <b>图表 Chart:</b> <a href="https://CNCrypto.io/coin/${
