@@ -465,9 +465,9 @@ export class CoinsService {
       resultCoin?.slug
     }">https://CNCrypto.io/coin/${resultCoin?.slug}</a>
 
-<b>池子 Liquidity / 市值 MarketCap: </b> ${Number(
+<b>池子 Liquidity / 市值 MarketCap: </b> $${Number(
       resultCoin.liquidityUsd,
-    ).toLocaleString('en')} / ${Number(resultCoin.marketCap).toLocaleString(
+    ).toLocaleString('en')} / $${Number(resultCoin.marketCap).toLocaleString(
       'en',
     )}
 
