@@ -444,7 +444,7 @@ export class CoinsService {
     const message = `
 <b>⚡️ <a href="https://CNCrypto.io">CNCrypto.io</a> ——通知上市 | <a href="https://CNCrypto.io">CNCrypto.io</a> Listing Alert${
       !resultCoin?.premium ? ' (Free)' : ''
-    } - ${resultCoin?.chains[0]?.chain.scanKey.toLocaleUpperCase()}</b>
+    } - ${resultCoin?.chains[0]?.chain.symbol.toLocaleUpperCase()}</b>
 
 <b>代币 Coin:</b> <a href="https://CNCrypto.io/coin/${resultCoin?.slug}">${
       resultCoin?.name
@@ -455,12 +455,7 @@ export class CoinsService {
       }"><b>电报群 Telegram (英) </b></a>`
     }
 ${resultCoin?.chains
-  ?.map(
-    (item) =>
-      `\n<b>合约 Contract ${item?.chain.scanKey.toLocaleUpperCase()}:</b>  ${
-        item?.contractAddress
-      }`,
-  )
+  ?.map((item) => `\n<b>合约 Contract:</b>  ${item?.contractAddress}`)
   .join('')}
 ${
   resultCoin?.presaleLink
