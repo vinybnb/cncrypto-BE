@@ -464,7 +464,7 @@ ${resultCoin?.chains
   .join('')}
 ${
   resultCoin?.presaleLink
-    ? `<b>买 Buy: </b> <a href="${resultCoin?.presaleLink}">${resultCoin?.presaleLink}</a>`
+    ? `<b>\n买 Buy: </b> <a href="${resultCoin?.presaleLink}">${resultCoin?.presaleLink}</a>`
     : `<b>\n图表 Chart:</b> <a href="https://CNCrypto.io/coin/${
         resultCoin?.slug
       }">https://CNCrypto.io/coin/${resultCoin?.slug}</a>
