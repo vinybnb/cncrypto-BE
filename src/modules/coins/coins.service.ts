@@ -473,7 +473,7 @@ ${
 <a href="https://CNCrypto.io/"><b>CNCrypto.io:</b></a>
 <a href="https://t.me/cncrypto_io">Channel</a> | <a href="https://t.me/cncrypto_chat">Group</a> | <a href="https://twitter.com/cncrypto_io">Twitter</a>
 
-<a href="https://cncrypto.io/privacy-policy">免责声明</a>
+<a href="https://cncrypto.io/privacy-policy">免责声明 Disclaimer</a>
       `;
 
     const chatId = '-1001843683844';
