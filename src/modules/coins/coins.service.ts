@@ -453,26 +453,28 @@ export class CoinsService {
       ` | <a href="${
         resultCoin?.links?.find((item) => item?.name?.includes('TELEGRAM')).link
       }"><b>电报群 Telegram (英) </b></a>`
-    }${resultCoin?.chains
-      ?.map(
-        (item) =>
-          `\n<b>合约 Contract ${item?.chain.scanKey.toLocaleUpperCase()}:</b>  ${
-            item?.contractAddress
-          }`,
-      )
-      .join('')}
+    }
+${resultCoin?.chains
+  ?.map(
+    (item) =>
+      `\n<b>合约 Contract ${item?.chain.scanKey.toLocaleUpperCase()}:</b>  ${
+        item?.contractAddress
+      }`,
+  )
+  .join('')}
 ${
   resultCoin?.presaleLink
     ? `<b>买 Buy: </b> <a href="${resultCoin?.presaleLink}">${resultCoin?.presaleLink}</a>`
-    : `<b>图表 Chart:</b> <a href="https://CNCrypto.io/coin/${
+    : `<b>\n图表 Chart:</b> <a href="https://CNCrypto.io/coin/${
         resultCoin?.slug
       }">https://CNCrypto.io/coin/${resultCoin?.slug}</a>
-<b>池子 Liquidity / 市值 MarketCap: </b> $${Number(
+<b>\n池子 Liquidity / 市值 MarketCap: </b> $${Number(
         resultCoin.liquidityUsd,
       ).toLocaleString('en')} / $${Number(resultCoin.marketCap).toLocaleString(
         'en',
       )}`
 }
+
 <a href="https://CNCrypto.io/"><b>CNCrypto.io:</b></a>
 <a href="https://t.me/cncrypto_io">Channel</a> | <a href="https://t.me/cncrypto_chat">Group</a> | <a href="https://twitter.com/cncrypto_io">Twitter</a>
 
