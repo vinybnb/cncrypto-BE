@@ -465,6 +465,12 @@ export class CoinsService {
       resultCoin?.slug
     }">https://CNCrypto.io/coin/${resultCoin?.slug}</a>
 
+<b>池子 Liquidity / 市值 MarketCap: </b> ${Number(
+      resultCoin.liquidityUsd,
+    ).toLocaleString('en')} / ${Number(resultCoin.marketCap).toLocaleString(
+      'en',
+    )}
+
 <a href="https://CNCrypto.io/"><b>CNCrypto.io:</b></a>
 <a href="https://t.me/cncrypto_io">Channel</a> | <a href="https://t.me/cncrypto_chat">Group</a> | <a href="https://twitter.com/cncrypto_io">Twitter</a>
 
