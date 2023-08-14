@@ -455,7 +455,9 @@ export class CoinsService {
       }"><b>电报群 Telegram (英) </b></a>`
     }
 ${resultCoin?.chains
-  ?.map((item) => `\n<b>合约 Contract:</b>  ${item?.contractAddress}`)
+  ?.map(
+    (item) => `\n<b>合约 Contract:</b>  <code>${item?.contractAddress}</code>`,
+  )
   .join('')}
 ${
   resultCoin?.presaleLink
