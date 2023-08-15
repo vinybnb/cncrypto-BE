@@ -336,6 +336,7 @@ export class CoinsService {
         dto.change24h = tokenInfo?.priceChange.h24;
         dto.change6h = tokenInfo?.priceChange.h6;
         dto.change1h = tokenInfo?.priceChange.h24;
+        dto.marketCap = tokenInfo?.fdv;
         break;
       } catch (error) {}
     }
