@@ -435,6 +435,10 @@ export class CoinsService {
       })),
     };
 
+    const tokenInfo = await this.getTokenInfo(
+      resultCoin?.chains[0].contractAddress,
+    );
+
     const tokenTelegramBot = '6134109204:AAHhiTQ-4hsJhTXZAc9s4gpQpz9qMlKSrvs';
 
     const botTelegram = new TelegramBot(tokenTelegramBot, {
@@ -467,10 +471,8 @@ ${
         resultCoin?.slug
       }">https://CNCrypto.io/coin/${resultCoin?.slug}</a>
 <b>\n池子 Liquidity / 市值 MarketCap: </b> $${Number(
-        resultCoin.liquidityUsd,
-      ).toLocaleString('en')} / $${Number(resultCoin.marketCap).toLocaleString(
-        'en',
-      )}`
+        tokenInfo?.liquidity?.usd,
+      ).toLocaleString('en')} / $${Number(tokenInfo?.fdv).toLocaleString('en')}`
 }
 
 <a href="https://CNCrypto.io/"><b>CNCrypto.io:</b></a>
